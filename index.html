@@ -384,8 +384,9 @@
     }
 
     /* Professional hide cursor class for fullscreen playback */
-    .player-section.hide-cursor {
-      cursor: none;
+    .player-section.hide-cursor,
+    .player-section.hide-cursor * {
+      cursor: none !important;
     }
 
     .video-element {
@@ -1549,6 +1550,33 @@
 
       .channel-card {
         height: 98px;
+      }
+
+      /* Stack player controls vertically on small screen portrait orientations so they fit without overflowing */
+      .player-controls-bar {
+        padding: 8px 12px;
+        border-radius: 16px;
+      }
+
+      .controls-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .controls-group {
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .control-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .control-btn.btn-play {
+        width: 38px;
+        height: 38px;
       }
 
       .volume-container {
