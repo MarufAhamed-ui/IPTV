@@ -1613,93 +1613,55 @@
       }
     }
 
-    /* DYNAMIC MOBILE ROTATE INDICATOR OVERLAY */
-    .rotate-overlay {
+    /* FLOATING MOBILE ROTATE LANDSCAPE BUTTON */
+    .rotate-btn-corner {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(12, 8, 23, 0.95);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      display: none; /* Controlled by active status classes */
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      z-index: 150;
-      text-align: center;
-      padding: 24px;
+      top: 75px; /* Floats below the LIVE indicator badge */
+      right: 20px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(168, 85, 247, 0.85); /* Neon purple glow accent */
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
-    }
-
-    /* Show only in fullscreen + portrait + mobile query via JS */
-    .rotate-overlay.show {
-      display: flex;
-    }
-
-    .rotate-icon-wrapper {
-      width: 80px;
-      height: 80px;
-      position: relative;
-      display: flex;
+      display: none; /* Controlled by active status classes */
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      z-index: 150;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(168, 85, 247, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .rotate-phone-svg {
-      width: 44px;
-      height: 44px;
-      stroke: var(--accent-primary);
-      filter: drop-shadow(0 0 10px var(--accent-primary-glow));
-      animation: rotate-phone 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    .rotate-btn-corner.show {
+      display: flex;
+      animation: rotate-pulse 2s infinite;
     }
 
-    @keyframes rotate-phone {
+    .rotate-btn-corner:hover {
+      background: #b567f8;
+      transform: scale(1.08);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.6);
+    }
+
+    .rotate-btn-corner svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      animation: rotate-phone-icon 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes rotate-phone-icon {
       0% { transform: rotate(0deg); }
       35% { transform: rotate(-90deg); }
       70% { transform: rotate(-90deg); }
       100% { transform: rotate(0deg); }
     }
 
-    .rotate-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      background: linear-gradient(135deg, var(--text-highlight) 30%, var(--accent-primary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .rotate-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      max-width: 250px;
-      line-height: 1.6;
-    }
-
-    .rotate-action-btn {
-      background: var(--accent-primary);
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: var(--shadow-glow);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 8px;
-    }
-
-    .rotate-action-btn:hover {
-      background: #b567f8;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    @keyframes rotate-pulse {
+      0% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(168, 85, 247, 0.6); }
+      70% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 0 8px rgba(168, 85, 247, 0); }
+      100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(168, 85, 247, 0); }
     }
 
     /* CINEMA AMBIENT GLOW BACKLIGHTING styles */
@@ -1935,23 +1897,14 @@
           </div>
         </div>
 
-        <!-- Rotate Device Prompt Overlay -->
-        <div class="rotate-overlay" id="rotateOverlay">
-          <div class="rotate-icon-wrapper">
-            <!-- SVG Phone with rotation vector arrow -->
-            <svg class="rotate-phone-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-              <line x1="12" y1="18" x2="12.01" y2="18"></line>
-              <path d="M17 2.01A2.4 2.4 0 0 1 19 4.5l0 15a2.4 2.4 0 0 1-2 2.5"></path>
-            </svg>
-          </div>
-          <div class="rotate-title">Rotate Your Device</div>
-          <div class="rotate-desc">Turn your phone sideways to landscape mode for the best theater viewing experience.</div>
-          <button class="rotate-action-btn" id="rotateActionBtn" onclick="requestLandscapeOrientation()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
-            Auto Rotate
-          </button>
-        </div>
+        <!-- Small Floating Orientation Auto-Rotate Button (Appears only on portrait mobile fullscreen) -->
+        <button class="rotate-btn-corner" id="rotateOverlay" onclick="requestLandscapeOrientation()" title="Auto Rotate Screen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            <path d="M17 2.01A2.4 2.4 0 0 1 19 4.5l0 15a2.4 2.4 0 0 1-2 2.5"></path>
+          </svg>
+        </button>
 
       </div>
 
@@ -2811,23 +2764,20 @@
       const isFullscreen = !!document.fullscreenElement;
       const isPortrait = window.matchMedia("(orientation: portrait)").matches;
       const isMobile = window.innerWidth < 900; // standard mobile breakpoint
-      const rotateOverlay = document.getElementById('rotateOverlay');
+      const rotateBtn = document.getElementById('rotateOverlay');
       
-      if (rotateOverlay) {
+      if (rotateBtn) {
         if (isFullscreen && isPortrait && isMobile) {
-          rotateOverlay.classList.add('show');
-          
-          // Show or hide "Auto Rotate" button based on API support
-          const rotateBtn = document.getElementById('rotateActionBtn');
-          if (rotateBtn) {
-            if (screen.orientation && screen.orientation.lock) {
-              rotateBtn.style.display = 'flex';
-            } else {
-              rotateBtn.style.display = 'none'; // Bypassed on iOS which doesn't support orientation lock
-            }
+          // Display the auto-rotate floating shortcut only if the Screen Orientation lock API is supported.
+          // Since iOS does not support orientation lock, we let iOS users physically rotate to landscape 
+          // while viewing the portrait fullscreen stream completely block-free.
+          if (screen.orientation && screen.orientation.lock) {
+            rotateBtn.classList.add('show');
+          } else {
+            rotateBtn.classList.remove('show');
           }
         } else {
-          rotateOverlay.classList.remove('show');
+          rotateBtn.classList.remove('show');
         }
       }
     }
