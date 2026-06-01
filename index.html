@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Maruf's IPTV - Premium Player</title>
+  <title>Maruf's IPTV - Premium</title>
   
   <!-- HLS.js CDN for reliable adaptive live stream playback -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
@@ -446,11 +446,21 @@
       will-change: filter, transform;
     }
 
-    .video-element.enhanced-ultra {
-      filter: contrast(1.09) saturate(1.12) brightness(1.02);
+    .video-element.enhanced-hdr {
+      filter: contrast(1.16) saturate(1.24) brightness(1.04); /* High-dynamic HDR contrast expander & color pop */
       image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
       image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1.001); /* Hardware subpixel frame stabilization */
+      transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
+      backface-visibility: hidden;
+      perspective: 1000px;
+      will-change: filter, transform;
+    }
+
+    .video-element.enhanced-both {
+      filter: contrast(1.18) saturate(1.28) brightness(1.04); /* Peak details and rich HDR colors combined! */
+      image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
+      image-rendering: crisp-edges;
+      transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
       backface-visibility: hidden;
       perspective: 1000px;
       will-change: filter, transform;
@@ -1847,8 +1857,8 @@
       display: block;
     }
     .control-btn.active-glow {
-      color: var(--accent-primary) !important;
-      filter: drop-shadow(0 0 8px var(--accent-primary-glow));
+      color: var(--btn-glow-color, var(--accent-primary)) !important;
+      filter: drop-shadow(0 0 8px var(--btn-glow-color, var(--accent-primary-glow)));
     }
   </style>
 </head>
@@ -2047,6 +2057,18 @@
                     <rect x="11.5" y="8.5" width="5.5" height="5" rx="1.2" style="stroke: currentColor !important; stroke-width: 1.5px !important; fill: none !important;" />
                     <path d="M 12.7 12.2 L 13.7 9.8 L 14.7 12.2 M 13.2 11.4 H 14.2" style="stroke: currentColor !important; stroke-width: 1.2px !important; fill: none !important; stroke-linecap: round; stroke-linejoin: round;" />
                     <path d="M 15.8 9.8 V 12.2" style="stroke: currentColor !important; stroke-width: 1.2px !important; fill: none !important; stroke-linecap: round;" />
+                    <path d="M20 1.5 c0 1.2 .6 1.8 1.8 1.8 c-1.2 0 -1.8 .6 -1.8 1.8 c0 -1.2 -.6 -1.8 -1.8 -1.8 c1.2 0 1.8 -.6 1.8 -1.8 z" style="fill: #f43f5e !important; stroke: none !important;" />
+                    <path d="M22.5 5.2 c0 .8 .4 1.2 1.2 1.2 c-.8 0 -1.2 .4 -1.2 1.2 c0 -.8 -.4 -1.2 -1.2 -1.2 c.8 0 1.2 -.4 1.2 -1.2 z" style="fill: #f43f5e !important; stroke: none !important;" />
+                  </svg>
+                </button>
+
+                <!-- AI HDR Dynamic Range Toggle -->
+                <button class="control-btn" id="hdrBtn" onclick="toggleAIHDR()" title="AI HDR Dynamic Range (H)">
+                  <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none !important; stroke: none !important;">
+                    <rect x="2" y="6" width="15" height="15" rx="3.5" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important;" />
+                    <path d="M 5 16 A 4.5 4.5 0 0 1 14 16" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important; stroke-linecap: round;" />
+                    <path d="M 7.5 16 A 2 2 0 0 1 11.5 16" style="stroke: currentColor !important; stroke-width: 1.5px !important; fill: none !important; stroke-linecap: round;" />
+                    <circle cx="9.5" cy="11.5" r="1.5" style="fill: currentColor !important; stroke: none !important;" />
                     <path d="M20 1.5 c0 1.2 .6 1.8 1.8 1.8 c-1.2 0 -1.8 .6 -1.8 1.8 c0 -1.2 -.6 -1.8 -1.8 -1.8 c1.2 0 1.8 -.6 1.8 -1.8 z" style="fill: #f43f5e !important; stroke: none !important;" />
                     <path d="M22.5 5.2 c0 .8 .4 1.2 1.2 1.2 c-.8 0 -1.2 .4 -1.2 1.2 c0 -.8 -.4 -1.2 -1.2 -1.2 c.8 0 1.2 -.4 1.2 -1.2 z" style="fill: #f43f5e !important; stroke: none !important;" />
                   </svg>
@@ -3948,8 +3970,10 @@
         volumeSlider.value = 1;
         updateVolumeSliderFill(1);
       }
-      const savedEnhancer = localStorage.getItem('iptv_video_enhancer') === 'true';
+      const savedEnhancer = localStorage.getItem('iptv_video_enhancer') === 'true' || localStorage.getItem('iptv_video_enhancer') === 'sharpen';
+      const savedHDR = localStorage.getItem('iptv_hdr') === 'true';
       setVideoEnhancerState(savedEnhancer);
+      setAIHDRState(savedHDR);
 
       // 3. Load active playlist source
       const savedPlaylistSource = localStorage.getItem('iptv_source_type') || 'default';
@@ -4564,21 +4588,38 @@
     function setupVideoEventListeners() {
       // Single-click to toggle controls visibility, double-click to toggle fullscreen (ignoring overlays controls interactions)
       let clickTimeout = null;
+      let lastTapTime = 0; // High-precision double-tap detection for mobile touch events
+
       function handlePlayerClick(event) {
-        const overlay = document.getElementById('playerOverlay');
-        if (event.target !== video && event.target !== overlay) return;
+        // Ignore interactions on buttons, sliders, or the control bar container itself
+        if (event.target.closest('button') || event.target.closest('.player-controls-bar') || event.target.closest('.quality-dropdown')) {
+          return;
+        }
         
         event.preventDefault();
         event.stopPropagation(); // Prevent bubbling to playerSection click handler
-        
-        if (clickTimeout) {
-          clearTimeout(clickTimeout);
-          clickTimeout = null;
+
+        const currentTime = new Date().getTime();
+        const tapDelay = currentTime - lastTapTime;
+
+        // Double-tap/double-click to toggle fullscreen (snappy 300ms window)
+        if (tapDelay < 300 && tapDelay > 0) {
+          if (clickTimeout) {
+            clearTimeout(clickTimeout);
+            clickTimeout = null;
+          }
           toggleFullscreen();
-        } else {
+          lastTapTime = 0; // Reset
+          return;
+        }
+        
+        lastTapTime = currentTime;
+
+        // Single-tap/single-click to toggle controls visibility
+        if (!clickTimeout) {
           clickTimeout = setTimeout(() => {
             clickTimeout = null;
-            // Toggle controls overlay visibility
+            const overlay = document.getElementById('playerOverlay');
             if (overlay.classList.contains('show')) {
               hideControls();
             } else {
@@ -4587,8 +4628,11 @@
           }, 250);
         }
       }
+
       video.addEventListener('click', handlePlayerClick);
+      video.addEventListener('touchend', handlePlayerClick);
       document.getElementById('playerOverlay').addEventListener('click', handlePlayerClick);
+      document.getElementById('playerOverlay').addEventListener('touchend', handlePlayerClick);
       
       video.addEventListener('loadedmetadata', () => {
         if (upscaler && upscaler.upscalerEnabled) {
@@ -5020,52 +5064,109 @@
       }
     }
 
+    let hdrEnabled = false;
+
     function toggleVideoEnhancer() {
       setVideoEnhancerState(!videoEnhancerEnabled);
     }
 
+    function toggleAIHDR() {
+      setAIHDRState(!hdrEnabled);
+    }
+
     function setVideoEnhancerState(enabled) {
       videoEnhancerEnabled = !!enabled;
+      localStorage.setItem('iptv_video_enhancer', videoEnhancerEnabled ? 'true' : 'false');
 
       const btn = document.getElementById('enhancerBtn');
-      const badge = document.getElementById('enhancerStatusBadge');
-
-      // Clean previous classes from video element
-      video.classList.remove('enhanced-clear');
-
-      if (enabled) {
-        // Toggle active button glow
-        if (btn) btn.classList.add('active-glow');
-        
-        // Set local storage
-        localStorage.setItem('iptv_video_enhancer', 'true');
-
-        // Apply ultra-lightweight hardware compositor sharpening (100% lag-free)
-        video.classList.add('enhanced-clear');
-        
-        if (badge) {
-          badge.style.display = 'flex';
-          badge.textContent = 'AI ENHANCED';
-          badge.style.background = 'rgba(168, 85, 247, 0.2)';
-          badge.style.borderColor = 'rgba(168, 85, 247, 0.5)';
-          badge.style.color = 'var(--accent-primary)';
-          badge.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.2)';
+      if (btn) {
+        if (videoEnhancerEnabled) {
+          btn.classList.add('active-glow');
+          btn.style.setProperty('--btn-glow-color', '#06b6d4'); // Cyan glow
+        } else {
+          btn.classList.remove('active-glow');
         }
-        showToast("AI Enhancer: GPU Sharpening Active! 🌟", "success");
+      }
 
-        // Force HLS to select highest quality resolution
+      applyCombinedFilters();
+      
+      if (videoEnhancerEnabled) {
+        showToast("AI Sharpening: Enabled! 🌟", "success");
+      } else {
+        showToast("AI Sharpening: Disabled", "warning");
+      }
+    }
+
+    function setAIHDRState(enabled) {
+      hdrEnabled = !!enabled;
+      localStorage.setItem('iptv_hdr', hdrEnabled ? 'true' : 'false');
+
+      const btn = document.getElementById('hdrBtn');
+      if (btn) {
+        if (hdrEnabled) {
+          btn.classList.add('active-glow');
+          btn.style.setProperty('--btn-glow-color', '#f43f5e'); // Coral Pink glow
+        } else {
+          btn.classList.remove('active-glow');
+        }
+      }
+
+      applyCombinedFilters();
+
+      if (hdrEnabled) {
+        showToast("AI HDR: Dynamic Range color pop enabled! 🌈", "success");
+      } else {
+        showToast("AI HDR: Disabled", "warning");
+      }
+    }
+
+    function applyCombinedFilters() {
+      // Clean previous classes from video element
+      video.classList.remove('enhanced-clear', 'enhanced-hdr', 'enhanced-both');
+
+      const badge = document.getElementById('enhancerStatusBadge');
+      if (badge) badge.style.display = 'none';
+
+      // Force HLS quality
+      if (videoEnhancerEnabled || hdrEnabled) {
         if (hlsInstance && hlsInstance.levels && hlsInstance.levels.length > 0) {
           hlsInstance.nextLevel = hlsInstance.levels.length - 1;
         }
       } else {
-        if (btn) btn.classList.remove('active-glow');
-        if (badge) badge.style.display = 'none';
-        
-        localStorage.setItem('iptv_video_enhancer', 'false');
-        showToast("AI Enhancer: Bypass Mode (Original Feed)", "warning");
-
         if (hlsInstance) {
           hlsInstance.nextLevel = -1; // Auto level
+        }
+      }
+
+      if (videoEnhancerEnabled && hdrEnabled) {
+        video.classList.add('enhanced-both');
+        if (badge) {
+          badge.style.display = 'flex';
+          badge.textContent = 'SHARP + HDR';
+          badge.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(244, 63, 94, 0.2) 100%)';
+          badge.style.borderColor = 'rgba(168, 85, 247, 0.5)';
+          badge.style.color = '#fff';
+          badge.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.3)';
+        }
+      } else if (videoEnhancerEnabled) {
+        video.classList.add('enhanced-clear');
+        if (badge) {
+          badge.style.display = 'flex';
+          badge.textContent = 'AI SHARPEN';
+          badge.style.background = 'rgba(6, 182, 212, 0.2)';
+          badge.style.borderColor = 'rgba(6, 182, 212, 0.5)';
+          badge.style.color = 'var(--accent-secondary)';
+          badge.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.2)';
+        }
+      } else if (hdrEnabled) {
+        video.classList.add('enhanced-hdr');
+        if (badge) {
+          badge.style.display = 'flex';
+          badge.textContent = 'AI HDR';
+          badge.style.background = 'rgba(244, 63, 94, 0.2)';
+          badge.style.borderColor = 'rgba(244, 63, 94, 0.5)';
+          badge.style.color = '#f43f5e';
+          badge.style.boxShadow = '0 0 10px rgba(244, 63, 94, 0.2)';
         }
       }
     }
@@ -5327,6 +5428,9 @@
           break;
         case 'KeyE':
           toggleVideoEnhancer();
+          break;
+        case 'KeyH':
+          toggleAIHDR();
           break;
         case 'KeyP':
           togglePip();
