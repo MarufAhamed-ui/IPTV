@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Maruf's IPTV - Premium</title>
+  <title>Maruf's IPTV - Premium Player</title>
   
   <!-- HLS.js CDN for reliable adaptive live stream playback -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   
   <!-- mpegts.js CDN for raw MPEG-TS live stream playback support (.ts extensions) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mpegts/1.7.3/mpegts.min.js"></script>
@@ -436,8 +436,11 @@
     }
 
     /* Advanced Dual-Stage GPU-Accelerated Video Enhancement Engines */
-    .video-element.enhanced-clear {
-      filter: contrast(1.05) saturate(1.08) brightness(1.01);
+    
+    /* DEFAULT & HIGH-END SYSTEMS (cap-high) - Peak dynamic sharpening & colors */
+    .video-element.enhanced-clear,
+    .cap-high .video-element.enhanced-clear {
+      filter: contrast(1.08) saturate(1.12) brightness(1.02);
       image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
       image-rendering: crisp-edges;
       transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
@@ -445,25 +448,71 @@
       perspective: 1000px;
       will-change: filter, transform;
     }
-
-    .video-element.enhanced-hdr {
-      filter: contrast(1.16) saturate(1.24) brightness(1.04); /* High-dynamic HDR contrast expander & color pop */
-      image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
+    .video-element.enhanced-hdr,
+    .cap-high .video-element.enhanced-hdr {
+      filter: contrast(1.16) saturate(1.24) brightness(1.04); /* Premium HDR expander & color pop */
+      image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
+      transform: translate3d(0, 0, 0) scale(1);
+      backface-visibility: hidden;
+      perspective: 1000px;
+      will-change: filter, transform;
+    }
+    .video-element.enhanced-both,
+    .cap-high .video-element.enhanced-both {
+      filter: contrast(1.18) saturate(1.28) brightness(1.04); /* Peak details and rich HDR combined */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translate3d(0, 0, 0) scale(1);
       backface-visibility: hidden;
       perspective: 1000px;
       will-change: filter, transform;
     }
 
-    .video-element.enhanced-both {
-      filter: contrast(1.18) saturate(1.28) brightness(1.04); /* Peak details and rich HDR colors combined! */
-      image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
+    /* MEDIUM-END SYSTEMS (cap-medium) - Balanced visual enhancement */
+    .cap-medium .video-element.enhanced-clear {
+      filter: contrast(1.06) saturate(1.10) brightness(1.01);
+      image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
+      transform: translate3d(0, 0, 0) scale(1);
       backface-visibility: hidden;
-      perspective: 1000px;
       will-change: filter, transform;
+    }
+    .cap-medium .video-element.enhanced-hdr {
+      filter: contrast(1.12) saturate(1.18) brightness(1.02);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translate3d(0, 0, 0) scale(1);
+      backface-visibility: hidden;
+      will-change: filter, transform;
+    }
+    .cap-medium .video-element.enhanced-both {
+      filter: contrast(1.14) saturate(1.20) brightness(1.03);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translate3d(0, 0, 0) scale(1);
+      backface-visibility: hidden;
+      will-change: filter, transform;
+    }
+
+    /* LOW-END & MOBILE SYSTEMS (cap-low) - Zero overhead, ultra-lightweight single filter */
+    .cap-low .video-element.enhanced-clear {
+      filter: contrast(1.05);
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      will-change: filter;
+    }
+    .cap-low .video-element.enhanced-hdr {
+      filter: contrast(1.08) saturate(1.12);
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      will-change: filter;
+    }
+    .cap-low .video-element.enhanced-both {
+      filter: contrast(1.10) saturate(1.14);
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      will-change: filter;
     }
 
     /* Premium space-glass select dropdown styling */
@@ -2227,10 +2276,14 @@
     
     // Premium categorization normalization utility
     function getCleanCategory(name, currentCat) {
-  const normName = (name || '').toLowerCase();
-  const normCat = (currentCat || '').toLowerCase();
+      const normName = (name || '').toLowerCase();
+      const normCat = (currentCat || '').toLowerCase();
 
-  // 1. Kids
+      if (normCat === 'akash') {
+        return 'Akash';
+      }
+
+      // 1. Kids
   if (normName.includes('cartoon') || normName.includes('baby tv') || normName.includes('cbeebies') || 
       normName.includes('kids') || normName.includes('junior') || normName.includes('gopal bhar') || 
       normName.includes('motu patlu') || normName.includes('jungle book') || normName.includes('tooncast') || 
@@ -2373,58 +2426,280 @@
     // Statically embedded verified working BDIX IPTV channels
     const STATIC_BDIX_CHANNELS = [
   {
-    "name": "JAMUNA TV",
-    "logo": "https://dl.dropbox.com/s/k7z1dsec1jfjbkn/jamuna_tv_bd.png",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8"
-  },
-  {
-    "name": "SOMOY TV",
-    "logo": "https://dl.dropbox.com/s/leielj83em5kg7h/somoy_news.png",
-    "category": "Bangla",
+    "name": "Somoy TV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png",
+    "category": "Akash",
     "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8"
   },
   {
-    "name": "Ekattor TV",
-    "logo": "https://s4.gifyu.com/images/imagea02f4314e761661d.png",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8"
+    "name": "Jamuna TV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560213832.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8"
   },
   {
-    "name": "ATN NEWS",
-    "logo": "https://dl.dropbox.com/s/4ldi1dp09s8o6bm/atn_news_bd.png",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8"
+    "name": "DBC News HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186306600.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8"
   },
   {
-    "name": "Channel 24",
-    "logo": "https://dl.dropbox.com/s/puf12xv5flgbnz5/channel24_bd.png",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8"
-  },
-  {
-    "name": "BTV",
-    "logo": "https://ssl.com.bd/sites/default/files/BTV%20Logo%20Gallery.png",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8"
-  },
-  {
-    "name": "INDEPENDENT TV",
-    "logo": "https://dl.dropbox.com/s/7xwwb8hetz3w8rp/independent_tv.png",
-    "category": "Bangla",
+    "name": "Independent TV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1739964387847.png",
+    "category": "Akash",
     "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8"
   },
   {
-    "name": "Channel i",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/8/88/Channel-i.svg/384px-Channel-i.svg.png",
-    "category": "Bangla",
+    "name": "Ekattor HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1739963327549.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8"
+  },
+  {
+    "name": "Channel 24 HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735556516924.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8"
+  },
+  {
+    "name": "News 24 HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186895850.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8"
+  },
+  {
+    "name": "ATN News",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1739962961772.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8"
+  },
+  {
+    "name": "Al Jazeera",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735547218986.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1721/output/index.m3u8"
+  },
+  {
+    "name": "Star News",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189826301.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8"
+  },
+  {
+    "name": "BTV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561595482.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8"
+  },
+  {
+    "name": "Deepto TV HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1742713000749.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1711/output/index.m3u8"
+  },
+  {
+    "name": "SATV HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770187361105.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/index.m3u8"
+  },
+  {
+    "name": "Channel 9 HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770188008067.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/index.m3u8"
+  },
+  {
+    "name": "Ekhon TV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189283848.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1713/output/index.m3u8"
+  },
+  {
+    "name": "SRK TV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1746005940155.png",
+    "category": "Akash",
+    "url": "https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/playlist.m3u8"
+  },
+  {
+    "name": "Channel I HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1740567626692.png",
+    "category": "Akash",
     "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8"
   },
   {
+    "name": "Originals",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770313122372.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/originals/playlist.m3u8"
+  },
+  {
+    "name": "Cineedge HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770347851305.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/cineedge/playlist.m3u8"
+  },
+  {
     "name": "ATN Bangla",
-    "logo": "https://s6.gifyu.com/images/image27cfa7002786c232.png",
-    "category": "Bangla",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1740553740665.png",
+    "category": "Akash",
     "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8"
+  },
+  {
+    "name": "Uniques HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770347327658.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/uniques/playlist.m3u8"
+  },
+  {
+    "name": "ARY News",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770531824347.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1724/output/index.m3u8"
+  },
+  {
+    "name": "Superrix HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770348388925.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/superrix/playlist.m3u8"
+  },
+  {
+    "name": "Crazy Ex",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770348753896.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/crazy_ex/playlist.m3u8"
+  },
+  {
+    "name": "Bangla Vision",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561344354.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8"
+  },
+  {
+    "name": "NTV",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560841094.png",
+    "category": "Akash",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8"
+  },
+  {
+    "name": "Screem",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770312098339.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/screem/playlist.m3u8"
+  },
+  {
+    "name": "Sports Legends",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770377900139.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/sportslegends/playlist.m3u8"
+  },
+  {
+    "name": "Flash Guys HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378074527.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/flashguys/playlist.m3u8"
+  },
+  {
+    "name": "Party Universe",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378215384.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/partyuniverse/playlist.m3u8"
+  },
+  {
+    "name": "Delicious",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378370876.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/delicious/playlist.m3u8"
+  },
+  {
+    "name": "Luxel HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378560772.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/luxell/playlist.m3u8"
+  },
+  {
+    "name": "Nikki",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378704923.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/nikky/playlist.m3u8"
+  },
+  {
+    "name": "Joy",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378874717.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/joy/playlist.m3u8"
+  },
+  {
+    "name": "BuddyStar HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770379038530.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/buddystar/playlist.m3u8"
+  },
+  {
+    "name": "Funny Junior HD",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770379573329.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/funnyjunior/playlist.m3u8"
+  },
+  {
+    "name": "Crimes",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380126540.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/crimes/playlist.m3u8"
+  },
+  {
+    "name": "True Stories",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380306806.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/truestories/playlist.m3u8"
+  },
+  {
+    "name": "Intelligence",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380460488.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/intelligence/playlist.m3u8"
+  },
+  {
+    "name": "Sports Range",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380601958.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/sportrange/playlist.m3u8"
+  },
+  {
+    "name": "Thunder Er",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380791303.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/thunder/playlist.m3u8"
+  },
+  {
+    "name": "Fighters",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380942670.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/fighter/playlist.m3u8"
+  },
+  {
+    "name": "Smarty",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381107924.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/smarty/playlist.m3u8"
+  },
+  {
+    "name": "Lucky Family",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381248531.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/luckyfamily/playlist.m3u8"
+  },
+  {
+    "name": "Enter 10 Bangla",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_kUVgsElgaFpQZNYILWQ0HLa-MAmbEjWNRBRqKms5qML2Q=s900-c-k-c0x00ffffff-no-rj",
+    "category": "Akash",
+    "url": "https://live-bangla.akamaized.net/liveabr/pub-iobanglakp3sff/live_720p/chunks.m3u8"
+  },
+  {
+    "name": "Kids Stars",
+    "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381398090.png",
+    "category": "Akash",
+    "url": "https://nomawnoijl.gpcdn.net/akash/kidsstars/playlist.m3u8"
   },
   {
     "name": "Bengali Betas",
@@ -3013,12 +3288,6 @@
     "logo": "https://jiotvimages.cdn.jio.com/dare_images/images/ZBCINEMA.png",
     "category": "Bangla",
     "url": "https://server.zillarbarta.com/ZBCINEMA/index.m3u8"
-  },
-  {
-    "name": "Bangla vision HD",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1hPBiCRZEwKM3BMdFnj83x-ltSSDsY3kYpfV6Vzv5fUhC1M_Z10BsovA&s=10",
-    "category": "Bangla",
-    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8"
   },
   {
     "name": "ZillarBarta News",
@@ -3627,12 +3896,6 @@
     "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8"
   },
   {
-    "name": "Enter 10 Bangla",
-    "logo": "https://i.postimg.cc/qvPXDQ68/Enter10-Bangla.jpg",
-    "category": "Bangla",
-    "url": "https://live-bangla.akamaized.net/liveabr/pub-iobanglakp3sff/live_720p/chunks.m3u8"
-  },
-  {
     "name": "R Plus News",
     "logo": "https://i.postimg.cc/3wPnKf19/Sony-Aath.jpg",
     "category": "Bangla",
@@ -3789,12 +4052,6 @@
     "url": "https://live20.bozztv.com/giatvplayout7/giatv-209624/index.m3u8"
   },
   {
-    "name": "SRK TV",
-    "logo": "https://i.imgur.com/ubZMeQv.jpg",
-    "category": "Kids",
-    "url": "https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/playlist.m3u8"
-  },
-  {
     "name": "Action Hollywood Movies",
     "logo": "https://i.postimg.cc/02CNFVwv/Star-Movies-HD.jpg",
     "category": "Entertainment",
@@ -3901,6 +4158,456 @@
     "logo": "https://i.postimg.cc/ZnD8CtvQ/BBC.jpg",
     "category": "News",
     "url": "https://vcdn.dunyanews.tv/lahorelive/ngrp:lnews_1_all/playlist.m3u8"
+  },
+  {
+    "name": "BTV News",
+    "logo": "https://ssl.com.bd/sites/default/files/BTV%20Logo%20Gallery.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/btvctg/index.m3u8"
+  },
+  {
+    "name": "BTV World",
+    "logo": "https://ssl.com.bd/sites/default/files/BTV%20Logo%20Gallery.png",
+    "category": "Bangla",
+    "url": "https://tvsen6.aynaott.com/btvhd/index.m3u8"
+  },
+  {
+    "name": "SOMOY TV",
+    "logo": "https://dl.dropbox.com/s/leielj83em5kg7h/somoy_news.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/somoytv/index.m3u8"
+  },
+  {
+    "name": "DBC News",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/9/9f/DBC_News_logo.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/dbcnews/index.m3u8"
+  },
+  {
+    "name": "BOISHAKHI TV",
+    "logo": "https://dl.dropbox.com/s/xolazzofexo6ub8/boishakhi.png",
+    "category": "Bangla",
+    "url": "https://tvsen6.aynaott.com/boishakhitv/index.m3u8"
+  },
+  {
+    "name": "Banglavision",
+    "logo": "https://s4.gifyu.com/images/image5c0bfa6b281be803.png",
+    "category": "Bangla",
+    "url": "https://tvsen5.aynaott.com/banglavision/index.m3u8"
+  },
+  {
+    "name": "RTV",
+    "logo": "https://s4.gifyu.com/images/image29282f9d45a183d6.png",
+    "category": "Bangla",
+    "url": "https://tvsen5.aynaott.com/RtvHD/index.m3u8"
+  },
+  {
+    "name": "SATV",
+    "logo": "https://s4.gifyu.com/images/image9f4a0ee9cd069bad.png",
+    "category": "Bangla",
+    "url": "https://tvsen6.aynaott.com/satv/index.m3u8"
+  },
+  {
+    "name": "Deepto TV",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/3/31/Deepto_TV_logo.png",
+    "category": "Bangla",
+    "url": "https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8"
+  },
+  {
+    "name": "Channel 9",
+    "logo": "https://i.ibb.co/xgfM1sf/2021-06-14-fff22-19-07.jpg",
+    "category": "Bangla",
+    "url": "https://tvsen6.aynaott.com/channel9/index.m3u8"
+  },
+  {
+    "name": "GAZI TV",
+    "logo": "https://i.ibb.co/pQGXzMP/images-1-removebg-preview.png",
+    "category": "Sports",
+    "url": "https://tvsen5.aynaott.com/Ravc7gPCZpxk/index.m3u8"
+  },
+  {
+    "name": "Star Sports 2",
+    "logo": "https://i.ytimg.com/vi/CXTxw-69Ch8/maxresdefault.jpg",
+    "category": "Sports",
+    "url": "http://103.110.111.36:8081/live/ssport2_720p/playlist.m3u8"
+  },
+  {
+    "name": "Sony Sports-2 HD",
+    "logo": "https://dtat2ks7dludr.cloudfront.net/spnsportsindia/channel_logos/SONY_SportsTen2_HD.png",
+    "category": "Sports",
+    "url": "http://103.110.111.36:8081/live/spten2_720p/playlist.m3u8"
+  },
+  {
+    "name": "Sony Sports-1 HD",
+    "logo": "https://dtat2ks7dludr.cloudfront.net/spnsportsindia/channel_logos/SONY_SportsTen1_HD.png",
+    "category": "Sports",
+    "url": "http://103.110.111.36:8081/live/ten1_720p/chunks.m3u8"
+  },
+  {
+    "name": "Sony Sports-5 SD",
+    "logo": "https://www.sonypicturesnetworks.com/images/logos/SONY_SportsTen5_SD_Logo_CLR.png",
+    "category": "Sports",
+    "url": "http://103.110.111.36:8081/live/spten5_720p/playlist.m3u8"
+  },
+  {
+    "name": "Geo Super TV",
+    "logo": "https://i.pinimg.com/originals/a0/f1/02/a0f102f34a179d207602df014cbf203d.jpg",
+    "category": "Sports",
+    "url": "http://175.107.244.52:4456/play/a06z/index.m3u8"
+  },
+  {
+    "name": "Madina live",
+    "logo": "https://images-na.ssl-images-amazon.com/images/I/71CywdrFaZL.png",
+    "category": "Religious",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8"
+  },
+  {
+    "name": "Saudi Quran",
+    "logo": "https://yt3.ggpht.com/ytc/AMLnZu_Gxy8ywjMY6_YPX-1uYtUGA56FOfDoBsH62-ekNA=s900-c-k-c0x00ffffff-no-rj",
+    "category": "Religious",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8"
+  },
+  {
+    "name": "CNN",
+    "logo": "https://logos-world.net/wp-content/uploads/2020/11/CNN-Logo.png",
+    "category": "News",
+    "url": "https://amg01448-samsungin-cnnnow-samsungin-4npqg.amagi.tv/playlist/amg01448-samsungin-cnnnow-samsungin/playlist.m3u8"
+  },
+  {
+    "name": "Animal Planet HD",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Animal_Planet_logo.svg/1280px-Animal_Planet_logo.svg.png",
+    "category": "Documentary",
+    "url": "https://tvsen6.aynaott.com/animal_planet_hd/index.m3u8"
+  },
+  {
+    "name": "[MM] TVM",
+    "logo": "",
+    "category": "Entertainment",
+    "url": "http://203.81.84.130/hls/mwd_serie/index.m3u8"
+  },
+  {
+    "name": "[MM] Golden Land",
+    "logo": "",
+    "category": "Entertainment",
+    "url": "http://203.81.84.130/hls/mwd_document/index.m3u8"
+  },
+  {
+    "name": "[MM] Light",
+    "logo": "",
+    "category": "Entertainment",
+    "url": "http://203.81.84.130/hls/mwd_family/index.m3u8"
+  },
+  {
+    "name": "Sportv 3",
+    "logo": "https://i.imghippo.com/files/WU1252hQk.jpg",
+    "category": "Sports",
+    "url": "http://sinalprivado.info:80/live/632035/GqGcFV4ntu/21008.ts"
+  },
+  {
+    "name": "Sportv 1",
+    "logo": "https://i.imghippo.com/files/PKYK9834nDw.png",
+    "category": "Sports",
+    "url": "http://sinalprivado.info:80/live/632035/GqGcFV4ntu/21002.ts"
+  },
+  {
+    "name": "Sportv 2",
+    "logo": "https://i.imghippo.com/files/bnHW6108tBk.jpg",
+    "category": "Sports",
+    "url": "http://sinalprivado.info:80/live/632035/GqGcFV4ntu/21005.ts"
+  },
+  {
+    "name": "Ekushey TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/1a33c7ab-d12a-4b70-bd10-697aa2886451.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/etv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Somoy TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/1a695f5d-e1b7-43f7-95bd-a3d17787891e.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/somoytv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Ekattor TV",
+    "logo": "https://i.ibb.co/1YpLBVGJ/logo-footer.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/ekattorbdtv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Desh TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/ac92db20-1e80-40da-aa95-ccaa3072d95d.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/deshtv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "BTV National",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/54163718-53c4-4ac6-8d86-ceca29d69554.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/btvhd/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Channel 9",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/346b6f47-c3d7-456e-bd98-d563d383c18a.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/channel9/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Maasranga TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/581fb949-ddaf-4f57-8cad-ca92985407aa.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/maasrangatv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "My TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/af0bb392-5459-4ae0-a7f7-861e49ee0573.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/mytv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Ekhon TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/41f41d61-4fa8-4b5f-9fe8-42632d7b599b.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/ekhontv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Channel 24",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/b6aa0497-735a-471c-9812-c42256e9b8de.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/channel24/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Nat Geo TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/4dd960d0-da32-4c23-b9aa-2d6b7e567ae1.png",
+    "category": "Documentary",
+    "url": "https://tvsen6.aynaott.com/natgeo/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "News 24",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/456be57e-2988-428c-af5d-9499ce726fb8.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/news24/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Dhinchaak",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/33b4e6d7-d66c-4afd-81ca-0ecd90e3e112.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/Dhinchaak/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "BTV Chattogram",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/3e176e82-a168-4371-aa1e-ac4064d5133e.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/btvctg/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Goldmines",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/c637b921-8577-4487-a3c8-9469cbd5dd4e.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/Goldmines/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Jamuna TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/cc8f548e-089c-47f6-8b6f-ff8699fb2a3d.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/jamunatv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Boishakhi TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/0eb2b55a-a44d-4d44-abd1-c4de611ff941.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/boishakhitv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Asian TV",
+    "logo": "https://i.ibb.co/whSc1ZVH/images.jpg",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/asiantv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Independent TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/b1684d4d-63b5-496b-b4d5-bc88129ac4e6.png",
+    "category": "News",
+    "url": "https://tvsen6.aynaott.com/independenttv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Bangla TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/b36ee02a-f3a1-4fe0-8c6c-b6fd237c20a7.png",
+    "category": "Bangla",
+    "url": "https://tvsen6.aynaott.com/banglatv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Goldmimes Movies",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/80cda149-7530-47bb-83c7-7a1923d9bcc1.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/GoldminesMovies/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "B4U Kadak",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/bafa3370-8092-4974-8924-8c6bf4627bad.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/B4U_Kadak/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Ananda TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/c9e1a9bb-bd4a-4782-908a-b3d1e94e9ccd.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/anandatv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Bijoy TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/44597fbf-862c-42a2-a542-6436abde3ffe.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/bijoytv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Mohona TV",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/f535895a-3b1d-49f4-a6e2-544a5e90510c.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/mohonatv/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Gazi TV HD",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/226d28bf-a5aa-4889-9de1-4d5654021fea.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/gtvhdforgame/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Aakaash 8",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/583734a3-8fdb-4d9a-a1e4-64dd31d58624.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/aakaashBangla/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Goldmines Bollywood",
+    "logo": "https://cloudtv.akamaized.net/AynaOTT/BDcontent/channels/images/4087eb73-46cd-4f54-a2a8-38f73caba875.png",
+    "category": "Entertainment",
+    "url": "https://tvsen6.aynaott.com/GoldminesBollywood/tracks-v1a1/mono.ts.m3u8"
+  },
+  {
+    "name": "Mahar TV (720p)",
+    "logo": "",
+    "category": "Entertainment",
+    "url": "https://tv.mahar.live/mahar/website.stream/playlist.m3u8"
+  },
+  {
+    "name": "MaharEsport1",
+    "logo": "",
+    "category": "Sports",
+    "url": "https://tv.mahar.live/esports/mahar.stream/esports/mahar2/chunks.m3u8"
+  },
+  {
+    "name": "CH5 HD",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/7/7e/TATV5_Logo_HD.png",
+    "category": "Entertainment",
+    "url": "https://639bc5877c5fe.streamlock.net/tv5hdlive/tv5hdlive/playlist.m3u8"
+  },
+  {
+    "name": "News 1",
+    "logo": "https://i.postimg.cc/CdyT1DN4/IMG-2411.png",
+    "category": "News",
+    "url": "https://server1.streamssl.com/stream/news1.m3u8"
+  },
+  {
+    "name": "13 Siam Thai",
+    "logo": "https://i.postimg.cc/C5vYBTHJ/IMG-1868.png",
+    "category": "Entertainment",
+    "url": "https://live.x2.co.th/live/13livetv-th.m3u8"
+  },
+  {
+    "name": "Ch 8 Thailand",
+    "logo": "https://i.postimg.cc/RFVxDzJm/IMG-1839.png",
+    "category": "Entertainment",
+    "url": "https://cdn-th-vip.livestreaming.in.th/ch8/ch8/chunklist_w1708048131.m3u8"
+  },
+  {
+    "name": "OnDemandChina",
+    "logo": "https://i.postimg.cc/kX8GvwBw/IMG-2766.png",
+    "category": "Entertainment",
+    "url": "https://tinyurl.com/37ztzhd2"
+  },
+  {
+    "name": "Celestial Classic Movies",
+    "logo": "https://i.postimg.cc/MGknscth/IMG-2909.png",
+    "category": "Entertainment",
+    "url": "https://stream1.freetv.fun/celestial-classic--c-1.ctv"
+  },
+  {
+    "name": "IQIYI",
+    "logo": "https://i.postimg.cc/y89DdqFc/IMG-2926.png",
+    "category": "Entertainment",
+    "url": "https://stream1.freetv.fun/ai-qi-yi---wj-1.ctv"
+  },
+  {
+    "name": "Hi-Yah!",
+    "logo": "https://i.postimg.cc/Nfz0ggHC/IMG-2079.png",
+    "category": "Entertainment",
+    "url": "https://linear-59.frequency.stream/dist/plex/59/hls/master/playlist.m3u8"
+  },
+  {
+    "name": "Rakuten Viki",
+    "logo": "https://i.postimg.cc/3J75zZtt/IMG-2773.png",
+    "category": "Entertainment",
+    "url": "https://tinyurl.com/mpecrtx7"
+  },
+  {
+    "name": "Asian Crush",
+    "logo": "https://i.postimg.cc/ht0kPvk9/IMG-2077.png",
+    "category": "Entertainment",
+    "url": "https://cineverse.g-mana.live/media/1ebfbe30-c35c-4404-8bc5-0339d750eb58/mainManifest.m3u8"
+  },
+  {
+    "name": "Cool Channel",
+    "logo": "https://i.postimg.cc/63sPMnRJ/IMG-1854.png",
+    "category": "Entertainment",
+    "url": "https://live-iptv.cool-channel.com/cool/live-720P.m3u8"
+  },
+  {
+    "name": "KBS World",
+    "logo": "https://i.postimg.cc/ydxhch1n/IMG-2218.png",
+    "category": "Entertainment",
+    "url": "http://mytv.dothome.co.kr/ch/catv/7.php"
+  },
+  {
+    "name": "KMOVIES",
+    "logo": "https://i.postimg.cc/tgZY1ck4/IMG-2189.png",
+    "category": "Entertainment",
+    "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=595"
+  },
+  {
+    "name": "SBS Drama",
+    "logo": "https://i.postimg.cc/LsZY2QdY/IMG-2573.png",
+    "category": "Entertainment",
+    "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=425"
+  },
+  {
+    "name": "SBT TV",
+    "logo": "https://i.postimg.cc/90srqGHg/IMG-2569.png",
+    "category": "Entertainment",
+    "url": "http://122.155.12.107:1935/live/sbt_tv_aac_300/playlist.m3u8"
+  },
+  {
+    "name": "R-Channel",
+    "logo": "https://i.postimg.cc/qBwcfM7K/IMG-2841.png",
+    "category": "Entertainment",
+    "url": "http://180.180.243.239/streams/3/hls"
+  },
+  {
+    "name": "Probashi",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzayWMQexbfPV-jTx3ZNoq-XOmlHKSX1SCjg&s",
+    "category": "Bangla",
+    "url": "http://158.69.24.53:8080/probashi_tv/index.m3u8"
+  },
+  {
+    "name": "Star Sports Hindi HD",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBHQLceCCfnBzG3UE29dn-9oSuUYimTsDpdRt4imUpmWTFeaFEflduHnQ&s=10",
+    "category": "Sports",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8"
+  },
+  {
+    "name": "Zee Bollywood",
+    "logo": "https://assets-prod.services.toffeelive.com/f_webp,w_240,q_100/OnSlPJYBcqxnFHJB6lFX/posters/ec7c3650-7240-4332-b766-cd1c850533ef.png",
+    "category": "​🇮​​🇳​​🇩​​🇮​​🇦​",
+    "url": "http://212.102.34.8:9080/ZeeBollywood/video.m3u8"
   }
 ];
 
@@ -3908,11 +4615,257 @@
 
 
 
+    class IPTVWebGLUpscaler {
+      constructor(videoElement, canvasElement) {
+        this.video = videoElement;
+        this.canvas = canvasElement || document.getElementById('gl-canvas');
+        this.upscalerEnabled = false; // Maps to existing integration checks
+        this.running = false;
+        this.corsBlocked = false; // Fallback indicator for cross-origin blocks
+        this.frameHandle = null;
 
+        // Try to obtain high-performance WebGL context
+        this.gl = this.canvas.getContext('webgl', {
+          antialias: false,
+          alpha: false,
+          powerPreference: 'high-performance',
+          depth: false,
+          stencil: false,
+          premultipliedAlpha: false,
+          preserveDrawingBuffer: false
+        }) || this.canvas.getContext('experimental-webgl');
 
+        if (!this.gl) {
+          console.warn("IPTV WebGL Upscaler: WebGL context creation failed. Falling back to GPU CSS.");
+          this.corsBlocked = true;
+          return;
+        }
 
-    
+        this.initShaders();
+        this.initBuffers();
+        this.initTexture();
+        this.resizeCanvas();
+      }
 
+      resizeCanvas() {
+        if (!this.gl) return;
+        
+        // 1. Get hardware profile
+        const isHigh = document.body.classList.contains('cap-high');
+        const isMedium = document.body.classList.contains('cap-medium');
+        
+        // 2. Get container sizes and native stream sizes
+        const containerWidth = this.canvas.clientWidth || 1280;
+        const containerHeight = this.canvas.clientHeight || 720;
+        const streamWidth = this.video.videoWidth || 1280;
+        const streamHeight = this.video.videoHeight || 720;
+        
+        let w = streamWidth;
+        let h = streamHeight;
+        
+        if (isHigh || isMedium) {
+          // Calculate the actual display bounding box inside object-fit: contain container
+          const containerRatio = containerWidth / containerHeight;
+          const streamRatio = streamWidth / streamHeight;
+          
+          let displayWidth, displayHeight;
+          if (streamRatio > containerRatio) {
+            displayWidth = containerWidth;
+            displayHeight = containerWidth / streamRatio;
+          } else {
+            displayHeight = containerHeight;
+            displayWidth = containerHeight * streamRatio;
+          }
+          
+          // Apply device pixel ratio for high-end displays
+          const dpr = isHigh ? (window.devicePixelRatio || 1) : 1;
+          
+          w = Math.round(displayWidth * dpr);
+          h = Math.round(displayHeight * dpr);
+        }
+        
+        if (this.canvas.width !== w || this.canvas.height !== h) {
+          this.canvas.width = w;
+          this.canvas.height = h;
+          this.gl.viewport(0, 0, w, h);
+        }
+      }
+
+      initShaders() {
+        const vs = `
+          attribute vec2 aPos;
+          varying vec2 vTex;
+          void main() {
+            vTex = (aPos + 1.0) * 0.5;
+            vTex.y = 1.0 - vTex.y; // Correct vertical flip
+            gl_Position = vec4(aPos, 0.0, 1.0);
+          }
+        `;
+
+        const fs = `
+          precision highp float;
+          uniform sampler2D tex;
+          uniform vec2 sourceResolution;
+          varying vec2 vTex;
+
+          // GPU-optimized B-Spline Bicubic Filter (using 4 bilinear lookups instead of 16 nearest lookups)
+          vec4 sampleBicubic(sampler2D s, vec2 uv, vec2 res) {
+            vec2 coord = uv * res;
+            vec2 gridVal = floor(coord - 0.5) + 0.5;
+            vec2 f = coord - gridVal;
+
+            vec2 w0 = 1.0/6.0 * (-(f*f*f) + 3.0*(f*f) - 3.0*f + 1.0);
+            vec2 w1 = 1.0/6.0 * (3.0*(f*f*f) - 6.0*(f*f) + 4.0);
+            vec2 w2 = 1.0/6.0 * (-3.0*(f*f*f) + 3.0*(f*f) + 3.0*f + 1.0);
+            vec2 w3 = 1.0/6.0 * (f*f*f);
+
+            vec2 g0 = w0 + w1;
+            vec2 g1 = w2 + w3;
+            vec2 h0 = (w1 / g0) - 0.5;
+            vec2 h1 = (w3 / g1) + 1.5;
+
+            vec2 texCoord00 = (gridVal + h0) / res;
+            vec2 texCoord10 = (gridVal + vec2(h1.x, h0.y)) / res;
+            vec2 texCoord01 = (gridVal + vec2(h0.x, h1.y)) / res;
+            vec2 texCoord11 = (gridVal + h1) / res;
+
+            return g0.x * g0.y * texture2D(s, texCoord00) +
+                   g1.x * g0.y * texture2D(s, texCoord10) +
+                   g0.x * g1.y * texture2D(s, texCoord01) +
+                   g1.x * g1.y * texture2D(s, texCoord11);
+          }
+
+          void main() {
+            vec2 px = vec2(1.0 / sourceResolution.x, 1.0 / sourceResolution.y);
+            
+            // Sample main center pixel with high-fidelity Bicubic interpolation
+            vec4 c = sampleBicubic(tex, vTex, sourceResolution);
+            
+            // Sample adjacent pixels with standard bilinear for spatial high-pass edge-detection
+            vec4 n = texture2D(tex, vTex + vec2(0.0, -px.y));
+            vec4 s = texture2D(tex, vTex + vec2(0.0, px.y));
+            vec4 e = texture2D(tex, vTex + vec2(px.x, 0.0));
+            vec4 w = texture2D(tex, vTex - vec2(px.x, 0.0));
+
+            // Sharpness kernel mixing
+            float sharpness = 0.25; // Optimized for high-fidelity 4K output crispness
+            vec4 result = c * (1.0 + 4.0 * sharpness) - (n + s + e + w) * sharpness;
+            gl_FragColor = clamp(result, 0.0, 1.0);
+          }
+        `;
+
+        const gl = this.gl;
+        const compile = (type, src) => {
+          const s = gl.createShader(type);
+          gl.shaderSource(s, src);
+          gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+            console.error("Shader compile error:", gl.getShaderInfoLog(s));
+          }
+          return s;
+        };
+
+        const program = gl.createProgram();
+        gl.attachShader(program, compile(gl.VERTEX_SHADER, vs));
+        gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fs));
+        gl.linkProgram(program);
+
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          console.error("Shader program linking error:", gl.getProgramInfoLog(program));
+        }
+        this.program = program;
+      }
+
+      initBuffers() {
+        const gl = this.gl;
+        const verts = new Float32Array([
+          -1, -1,
+           1, -1,
+          -1,  1,
+           1,  1
+        ]);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+        this.buffer = buf;
+      }
+
+      initTexture() {
+        const gl = this.gl;
+        this.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      }
+
+      draw() {
+        if (!this.running || !this.gl) return;
+
+        const gl = this.gl;
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+        try {
+          // Upload current video frame to GPU texture memory
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.video);
+        } catch (e) {
+          // CORS Tainting protection trigger!
+          // Remote streams hosted without Access-Control-Allow-Origin: * trigger security exception on texturing.
+          // In this case, we halt the rendering loop and fall back instantly to zero-copy GPU CSS.
+          console.warn("IPTV WebGL Upscaler: CORS security block detected. Seamlessly falling back to GPU CSS.");
+          this.corsBlocked = true;
+          this.stopRender();
+          applyCombinedFilters(); // Re-apply combined filters to trigger CSS fallback
+          return;
+        }
+
+        gl.useProgram(this.program);
+
+        // Pass native source video dimensions for accurate spatial filter steps
+        const sourceResLoc = gl.getUniformLocation(this.program, "sourceResolution");
+        gl.uniform2f(sourceResLoc, this.video.videoWidth || 1280, this.video.videoHeight || 720);
+
+        const loc = gl.getAttribLocation(this.program, "aPos");
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        if (this.video.requestVideoFrameCallback) {
+          this.frameHandle = this.video.requestVideoFrameCallback(() => this.draw());
+        } else {
+          this.frameHandle = requestAnimationFrame(() => this.draw());
+        }
+      }
+
+      startRender() {
+        if (!this.gl || this.corsBlocked || !this.upscalerEnabled) return;
+        if (this.running) return;
+
+        this.running = true;
+        this.canvas.style.display = "block";
+        this.video.style.opacity = "0.01"; // Make video transparent but keep active for HLS/decoder updates
+        this.resizeCanvas();
+        this.draw();
+      }
+
+      stopRender() {
+        this.running = false;
+        this.canvas.style.display = "none";
+        this.video.style.opacity = "1"; // Restore native video element visibility
+
+        if (this.frameHandle) {
+          if (this.video.cancelVideoFrameCallback && this.video.requestVideoFrameCallback) {
+            try { this.video.cancelVideoFrameCallback(this.frameHandle); } catch(e) {}
+          } else {
+            cancelAnimationFrame(this.frameHandle);
+          }
+          this.frameHandle = null;
+        }
+      }
+    }
     
     let allChannels = [];       // Loaded channel list
     let filteredChannels = [];  // Current display channel list
@@ -3944,7 +4897,7 @@
     let autoHideControlsTimer = null;
     let videoEnhancerEnabled = false;
 
-    const upscaler = null;
+    let upscaler = null;
 
     // Cinema Ambient Glow Backdrop States
     let ambientGlowEnabled = true; // Enabled by default for premium feel
@@ -3954,6 +4907,27 @@
 
     /* --- INITIALIZATION --- */
     document.addEventListener('DOMContentLoaded', () => {
+      // 0. Auto Device Capability Profiler for dynamic zero-latency filter tuning
+      const getDeviceCapability = () => {
+        const memory = navigator.deviceMemory || 4; // default to 4GB
+        const cores = navigator.hardwareConcurrency || 4; // default to 4 cores
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (memory <= 2 || cores <= 4 || isMobile) {
+          return 'low'; // Low-end mobile / Android TV box / TV stick
+        } else if (memory <= 4) {
+          return 'medium'; // Mid-range device
+        } else {
+          return 'high'; // Premium high-end PC/Laptop
+        }
+      };
+      const capability = getDeviceCapability();
+      document.body.classList.add(`cap-${capability}`);
+      console.log(`IPTV Engine: Profile loaded [Hardware Capability: ${capability.toUpperCase()}]`);
+
+      // Initialize WebGL upscaler
+      upscaler = new IPTVWebGLUpscaler(video, document.getElementById('gl-canvas'));
+
       // 1. Initialize favorites & recents from LocalStorage
       loadFavoritesFromStorage();
       loadRecentsFromStorage();
@@ -4232,6 +5206,7 @@
         else if (cat === 'Documentary') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>';
         else if (cat === 'Music') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>';
         else if (cat === 'Kids') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>';
+        else if (cat === 'Akash') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7a6 6 0 0 0-6-6M17 3a14 14 0 0 0-14 14M9 11a10 10 0 0 0-10-10M8 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1zM12 8V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zM14 11H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1zM8 8l3 3M12 12v5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1z"></path></svg>';
 
         coreCategories.push({
           id: cat,
@@ -4543,7 +5518,8 @@
             fpsDroppedMonitoringPeriod: 2000,
             fpsDroppedMonitoringThreshold: 0.1, // High sensitivity auto-quality scaling to preserve 60fps
             abrBandWidthFactor: 0.95,
-            abrBandWidthUpFactor: 0.7
+            abrBandWidthUpFactor: 0.7,
+            abrEwmaDefaultEstimate: 50000000 // 50 Mbps default connection estimate to force top resolution on startup
           });
 
           hlsInstance.loadSource(channel.url);
@@ -4555,12 +5531,23 @@
               spinner.style.display = 'none';
             });
             
+            // Start at the highest quality level by default
+            if (hlsInstance.levels && hlsInstance.levels.length > 0) {
+              hlsInstance.startLevel = hlsInstance.levels.length - 1;
+            }
+            
             populateQualityLevels();
             
             // Force maximum streaming resolution if Video Enhancer is enabled
             if (videoEnhancerEnabled && hlsInstance.levels && hlsInstance.levels.length > 0) {
               hlsInstance.nextLevel = hlsInstance.levels.length - 1;
+              hlsInstance.loadLevel = hlsInstance.levels.length - 1;
             }
+          });
+
+          // Sync dropdown quality status when ABR dynamically scales stream resolution
+          hlsInstance.on(Hls.Events.LEVEL_SWITCHED, () => {
+            populateQualityLevels();
           });
 
           hlsInstance.on(Hls.Events.ERROR, (event, data) => {
@@ -4751,7 +5738,8 @@
 
       sortedLevels.forEach(lvl => {
         const item = document.createElement('div');
-        const isActive = hlsInstance.currentLevel === lvl.index;
+        const isActive = (hlsInstance.loadLevel === lvl.index);
+        const isPlaying = (hlsInstance.loadLevel === -1 && hlsInstance.currentLevel === lvl.index);
         
         let label = `${lvl.height}p`;
         if (lvl.height >= 1080) label += ' HD';
@@ -4760,7 +5748,7 @@
         item.className = `quality-item ${isActive ? 'active' : ''}`;
         item.onclick = () => setQualityLevel(lvl.index);
         item.innerHTML = `
-          <span>${label}</span>
+          <span>${label} ${isPlaying ? '<span style="font-size: 9px; opacity: 0.75; color: var(--accent-secondary); margin-left: 6px; font-weight: 700; text-transform: uppercase; background: rgba(6, 182, 212, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(6, 182, 212, 0.25);">Active</span>' : ''}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         `;
         dropdown.appendChild(item);
@@ -4771,6 +5759,7 @@
       if (!hlsInstance) return;
 
       hlsInstance.currentLevel = levelIdx;
+      hlsInstance.loadLevel = levelIdx; // Locks the level (or enables ABR if -1)
       
       let levelLabel = "Auto (Adaptive)";
       if (levelIdx !== -1) {
@@ -5088,6 +6077,20 @@
         }
       }
 
+      // Configure upscaler state dynamically based on hardware capability
+      if (upscaler) {
+        const capability = document.body.classList.contains('cap-low') ? 'low' : 'high';
+        if (videoEnhancerEnabled && capability !== 'low' && !upscaler.corsBlocked) {
+          upscaler.upscalerEnabled = true;
+          if (!video.paused && !video.ended) {
+            upscaler.startRender();
+          }
+        } else {
+          upscaler.upscalerEnabled = false;
+          upscaler.stopRender();
+        }
+      }
+
       applyCombinedFilters();
       
       if (videoEnhancerEnabled) {
@@ -5121,8 +6124,12 @@
     }
 
     function applyCombinedFilters() {
-      // Clean previous classes from video element
+      // Clean previous classes from both video element and GL canvas
       video.classList.remove('enhanced-clear', 'enhanced-hdr', 'enhanced-both');
+      const canvas = document.getElementById('gl-canvas');
+      if (canvas) {
+        canvas.classList.remove('enhanced-clear', 'enhanced-hdr', 'enhanced-both');
+      }
 
       const badge = document.getElementById('enhancerStatusBadge');
       if (badge) badge.style.display = 'none';
@@ -5138,28 +6145,42 @@
         }
       }
 
+      const webglActive = upscaler && upscaler.running;
+
       if (videoEnhancerEnabled && hdrEnabled) {
-        video.classList.add('enhanced-both');
+        if (webglActive) {
+          // WebGL is doing high-fidelity sharpening, canvas does HDR dynamic range expansion
+          if (canvas) canvas.classList.add('enhanced-hdr');
+        } else {
+          video.classList.add('enhanced-both');
+        }
         if (badge) {
           badge.style.display = 'flex';
-          badge.textContent = 'SHARP + HDR';
+          badge.textContent = webglActive ? 'AI SHARP (GL) + HDR' : 'AI SHARP (GPU) + HDR';
           badge.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(244, 63, 94, 0.2) 100%)';
           badge.style.borderColor = 'rgba(168, 85, 247, 0.5)';
           badge.style.color = '#fff';
           badge.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.3)';
         }
       } else if (videoEnhancerEnabled) {
-        video.classList.add('enhanced-clear');
+        if (!webglActive) {
+          video.classList.add('enhanced-clear');
+        }
         if (badge) {
           badge.style.display = 'flex';
-          badge.textContent = 'AI SHARPEN';
+          badge.textContent = webglActive ? 'AI SHARP (GL)' : 'AI SHARP (GPU)';
           badge.style.background = 'rgba(6, 182, 212, 0.2)';
           badge.style.borderColor = 'rgba(6, 182, 212, 0.5)';
           badge.style.color = 'var(--accent-secondary)';
           badge.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.2)';
         }
       } else if (hdrEnabled) {
-        video.classList.add('enhanced-hdr');
+        // Apply HDR dynamic range expansion to the currently visible element
+        if (webglActive && canvas) {
+          canvas.classList.add('enhanced-hdr');
+        } else {
+          video.classList.add('enhanced-hdr');
+        }
         if (badge) {
           badge.style.display = 'flex';
           badge.textContent = 'AI HDR';
