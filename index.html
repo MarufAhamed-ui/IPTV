@@ -1909,7 +1909,155 @@
       color: var(--btn-glow-color, var(--accent-primary)) !important;
       filter: drop-shadow(0 0 8px var(--btn-glow-color, var(--accent-primary-glow)));
     }
-  </style>
+  
+    /* PREMIUM BANNER AD CONTAINERS */
+    .sidebar-ad-container {
+      padding: 10px 20px;
+      margin-top: auto; /* Push to bottom of sidebar above footer */
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .ad-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    
+    .ad-placeholder {
+      width: 100%;
+      height: 250px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .ad-placeholder:hover {
+      border-color: var(--border-accent);
+      background: rgba(168, 85, 247, 0.05);
+      box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.05);
+    }
+    
+    .leaderboard-ad-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 15px auto 5px auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .leaderboard-ad-container .ad-placeholder {
+      height: 90px;
+    }
+
+    .ad-mock-text {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* IN-PLAYER OVERLAY BANNER */
+    .player-ad-overlay {
+      position: absolute;
+      bottom: 92px; /* Float safely above control bar */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 480px;
+      height: 60px;
+      background: rgba(10, 6, 22, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .player-ad-overlay.show {
+      display: flex;
+      animation: adFadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    @keyframes adFadeIn {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    
+    .ad-label-overlay {
+      position: absolute;
+      top: -8px;
+      left: 14px;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    
+    .ad-close-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 22px;
+      height: 22px;
+      background: rgba(18, 14, 32, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    
+    .ad-close-btn:hover {
+      color: #fff;
+      background: var(--accent-danger);
+      transform: scale(1.08);
+    }
+
+    .ad-mock-text-overlay {
+      font-size: 12px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+</style>
 </head>
 <body>
 
@@ -1981,6 +2129,24 @@
         <!-- Categories list items will be dynamically loaded here -->
       </div>
 
+      
+      <!-- SIDEBAR BANNER AD SLOT -->
+      <div class="sidebar-ad-container" id="sidebarAdSlot">
+        <span class="ad-label">Sponsored Ad</span>
+        <div class="ad-placeholder" id="sidebarAdPlacement">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '38452c65c3089c8cb35d3c79a73a7881',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/38452c65c3089c8cb35d3c79a73a7881/invoke.js"></script>
+        </div>
+      </div>
+
       <!-- SOCIAL CONTACT / FEEDBACK FOOTER -->
       <div class="sidebar-footer">
         <div class="copyright">
@@ -2025,6 +2191,25 @@
             <div class="player-badges-group" style="display:flex; gap:8px;">
               <div class="enhancer-badge" id="enhancerStatusBadge" style="display:none;">AI ENHANCED</div>
               <div class="live-indicator">LIVE</div>
+            </div>
+          </div>
+
+          
+          <!-- IN-PLAYER BANNER AD OVERLAY -->
+          <div class="player-ad-overlay" id="playerAdOverlay" onclick="event.stopPropagation()">
+            <button class="ad-close-btn" onclick="closePlayerAd(event)" title="Close Ad">✕</button>
+            <span class="ad-label-overlay">Sponsor</span>
+            <div class="player-ad-content" id="playerAdPlacement">
+              <script type="text/javascript">
+                atOptions = {
+                  'key' : '84a7ccfd89e8fc9b558ac2a2def28268',
+                  'format' : 'iframe',
+                  'height' : 60,
+                  'width' : 468,
+                  'params' : {}
+                };
+              </script>
+              <script type="text/javascript" src="https://www.highperformanceformat.com/84a7ccfd89e8fc9b558ac2a2def28268/invoke.js"></script>
             </div>
           </div>
 
@@ -2163,6 +2348,24 @@
         </button>
 
       </div>
+
+      <!-- LEADERBOARD AD SLOT -->
+      <div class="leaderboard-ad-container" id="leaderboardAdSlot">
+        <span class="ad-label">Sponsored Ad</span>
+        <div class="ad-placeholder" id="leaderboardAdPlacement">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'b352b045ef1d3bf14812d7ea27bc09ce',
+              'format' : 'iframe',
+              'height' : 90,
+              'width' : 728,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/b352b045ef1d3bf14812d7ea27bc09ce/invoke.js"></script>
+        </div>
+      </div>
+
 
       <!-- BROWSER GRID SECTION -->
       <div class="browser-section">
@@ -4889,6 +5092,16 @@
     const aspectModes = ['aspect-contain', 'aspect-cover', 'aspect-stretch'];
     let aspectIndex = 0;
     
+    
+    let userClosedAdThisSession = false;
+    function closePlayerAd(event) {
+      if (event) event.stopPropagation();
+      userClosedAdThisSession = true;
+      const overlay = document.getElementById('playerAdOverlay');
+      if (overlay) overlay.style.display = 'none';
+      showToast('Ad dismissed for this stream.', 'info');
+    }
+
     let hlsInstance = null;
     let mpegtsPlayerInstance = null;
     let streamRetryCount = 0;
@@ -5421,6 +5634,10 @@
 
     /* --- PREMIUM VIDEO PLAYER LOGIC --- */
     function playChannel(globalIndex, isRetry = false) {
+      userClosedAdThisSession = false;
+      const adOverlay = document.getElementById('playerAdOverlay');
+      if (adOverlay) adOverlay.style.display = 'none';
+
       if (globalIndex < 0 || globalIndex >= allChannels.length) return;
       
       if (!isRetry) {
@@ -5633,6 +5850,9 @@
       });
 
       video.addEventListener('playing', () => {
+        const adOverlay = document.getElementById('playerAdOverlay');
+        if (adOverlay) adOverlay.style.display = 'none';
+
         spinner.style.display = 'none';
         showPlayIconState(false); 
         document.getElementById('playerErrorOverlay').style.display = 'none';
@@ -5650,6 +5870,9 @@
       });
 
       video.addEventListener('pause', () => {
+        const adOverlay = document.getElementById('playerAdOverlay');
+        if (adOverlay && !userClosedAdThisSession) adOverlay.style.display = 'flex';
+
         showPlayIconState(true);
         stopAmbientGlowLoop();
         if (upscaler) {
@@ -6520,6 +6743,9 @@
       document.getElementById('totalViews').innerText = "Local Session";
     }
   </script>
+
+  <!-- Social Bar Ads -->
+  <script type="text/javascript" src="https://pl29625632.effectivecpmnetwork.com/c8/0f/88/c80f887fc1d7a2de3abd2707f29b2fd6.js"></script>
 
 </body>
 </html>
