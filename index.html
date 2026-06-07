@@ -58,6 +58,16 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    /* GPU-accelerated smooth scrolling and reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     /* Premium Custom Scrollbars */
     ::-webkit-scrollbar {
       width: 5px;
@@ -110,8 +120,12 @@
       flex-direction: column;
       height: 100%;
       z-index: 100;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
       box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      margin-left: 0;
+      will-change: transform, margin-left;
+      transform: translate3d(0, 0, 0);
+      contain: layout style;
     }
 
     .sidebar-header {
@@ -162,7 +176,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.3s ease, box-shadow 0.2s ease;
     }
 
     .settings-btn:hover {
@@ -215,7 +229,7 @@
       text-decoration: none;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 4px 15px rgba(168, 85, 247, 0.15);
       cursor: pointer;
     }
@@ -340,6 +354,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      scroll-behavior: smooth;
     }
 
     .category-item {
@@ -352,7 +367,7 @@
       font-size: 14.5px;
       font-weight: 600;
       color: var(--text-muted);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
       user-select: none;
       border: 1px solid transparent;
       margin: 2px 0;
@@ -462,87 +477,16 @@
       cursor: pointer;
       position: relative;
       z-index: 2; /* Sit in front of the ambient glow canvas */
-      transition: filter 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s ease;
-      will-change: filter, transform;
-    }
-
-    /* Advanced Dual-Stage GPU-Accelerated Video Enhancement Engines */
-    
-    /* DEFAULT & HIGH-END SYSTEMS (cap-high) - Peak dynamic sharpening & colors */
-    .video-element.enhanced-clear,
-    .cap-high .video-element.enhanced-clear {
-      filter: contrast(1.03) saturate(1.05) brightness(1.00);
-      image-rendering: -webkit-optimize-contrast; /* Native hardware edge sharpening */
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1); /* Force zero-copy GPU overlay layer promotion */
-      backface-visibility: hidden;
-      perspective: 1000px;
-      will-change: filter, transform;
-    }
-    .video-element.enhanced-hdr,
-    .cap-high .video-element.enhanced-hdr {
-      filter: contrast(1.08) saturate(1.10) brightness(1.01); /* Premium HDR expander & color pop */
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1);
-      backface-visibility: hidden;
-      perspective: 1000px;
-      will-change: filter, transform;
-    }
-    .video-element.enhanced-both,
-    .cap-high .video-element.enhanced-both {
-      filter: contrast(1.10) saturate(1.12) brightness(1.01); /* Peak details and rich HDR combined */
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1);
-      backface-visibility: hidden;
-      perspective: 1000px;
-      will-change: filter, transform;
-    }
-
-    /* MEDIUM-END SYSTEMS (cap-medium) - Balanced visual enhancement */
-    .cap-medium .video-element.enhanced-clear {
-      filter: contrast(1.02) saturate(1.04);
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1);
-      backface-visibility: hidden;
-      will-change: filter, transform;
-    }
-    .cap-medium .video-element.enhanced-hdr {
-      filter: contrast(1.06) saturate(1.08) brightness(1.01);
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1);
-      backface-visibility: hidden;
-      will-change: filter, transform;
-    }
-    .cap-medium .video-element.enhanced-both {
-      filter: contrast(1.08) saturate(1.10) brightness(1.01);
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      transform: translate3d(0, 0, 0) scale(1);
-      backface-visibility: hidden;
-      will-change: filter, transform;
-    }
-
-    /* LOW-END & MOBILE SYSTEMS (cap-low) - Zero overhead, ultra-lightweight single filter */
-    .cap-low .video-element.enhanced-clear {
-      filter: contrast(1.01);
-      transform: translate3d(0, 0, 0);
-      backface-visibility: hidden;
+      transition: filter 0.25s ease;
       will-change: filter;
     }
-    .cap-low .video-element.enhanced-hdr {
-      filter: contrast(1.04) saturate(1.05);
-      transform: translate3d(0, 0, 0);
+
+    /* GPU-Accelerated Vibrant Color Pop Enhancer */
+    .video-element.color-enhanced {
+      filter: saturate(1.18) contrast(1.06) brightness(1.02);
+      transform: translate3d(0, 0, 0); /* Force zero-copy GPU overlay layer promotion */
       backface-visibility: hidden;
-      will-change: filter;
-    }
-    .cap-low .video-element.enhanced-both {
-      filter: contrast(1.05) saturate(1.06);
-      transform: translate3d(0, 0, 0);
-      backface-visibility: hidden;
+      perspective: 1000px;
       will-change: filter;
     }
 
@@ -557,7 +501,7 @@
       font-weight: 600;
       outline: none;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
     }
@@ -774,7 +718,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
     }
 
     .control-btn:hover {
@@ -1001,7 +945,7 @@
       color: var(--text-main);
       font-size: 13px;
       outline: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, width 0.25s ease;
     }
 
     .header-search-input:focus {
@@ -1141,7 +1085,9 @@
       align-items: center;
       cursor: pointer;
       position: relative;
-      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      will-change: transform;
+      contain: layout style;
       height: 112px; /* Extra spacious height */
       overflow: hidden; /* Clean boundary bounds */
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
@@ -1158,8 +1104,8 @@
 
     .channel-card:hover {
       border-color: var(--border-accent);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.65), 0 0 20px rgba(168, 85, 247, 0.25);
-      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.5), 0 0 15px rgba(168, 85, 247, 0.2);
+      transform: translateY(-4px);
       background: var(--bg-card-hover);
     }
 
@@ -1206,7 +1152,7 @@
       justify-content: center;
       cursor: pointer;
       z-index: 10;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
     }
 
     .fav-btn:hover {
@@ -1248,7 +1194,7 @@
       background: #ffffff; /* Crisp white base for transparent logo contrast */
       border-radius: 12px;
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       margin-top: 14px; /* Safe spacing from top badge/favorites */
       margin-bottom: 22px; /* Safe clearance for the bottom title banner */
       border: 1px solid rgba(255, 255, 255, 0.95);
@@ -1294,8 +1240,7 @@
       left: 0;
       right: 0;
       background: rgba(10, 7, 22, 0.9);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+
       border-top: 1px solid rgba(255, 255, 255, 0.06);
       padding: 6px 8px;
       text-align: center;
@@ -1325,7 +1270,7 @@
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
     .modal-backdrop.show {
@@ -1343,7 +1288,7 @@
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(168, 85, 247, 0.15);
       overflow: hidden;
       transform: scale(0.92) translateY(20px); /* Cinematic spring dynamics */
-      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
     }
@@ -1430,7 +1375,7 @@
       font-size: 14px;
       font-weight: 500;
       outline: none;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
 
     .form-input:focus {
@@ -1486,7 +1431,7 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .form-btn-submit:hover {
@@ -1510,7 +1455,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
     }
 
     .preset-item:hover {
@@ -1699,6 +1644,7 @@
       scrollbar-width: none;
       flex-shrink: 0;
       z-index: 101;
+      scroll-behavior: smooth;
     }
 
     .mobile-categories-bar::-webkit-scrollbar {
@@ -1745,16 +1691,35 @@
       .sidebar {
         position: absolute;
         top: 0;
-        left: -100%;
+        left: 0;
         bottom: 0;
         width: 290px;
         height: 100%;
         box-shadow: 20px 0 40px rgba(0,0,0,0.6);
         z-index: 150;
+        transform: translate3d(-100%, 0, 0);
+        /* Close: smooth deceleration */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
       }
 
       .sidebar.open {
-        left: 0;
+        transform: translate3d(0, 0, 0);
+        /* Open: slightly springy overshoot for natural feel */
+        transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease;
+      }
+
+      /* Smooth dark overlay behind mobile sidebar */
+      .sidebar-backdrop {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0);
+        z-index: 149;
+        pointer-events: none;
+        transition: background 0.3s ease;
+      }
+      .sidebar-backdrop.show {
+        background: rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
       }
 
       /* Lock Player stuck at top */
@@ -1885,7 +1850,7 @@
       cursor: pointer;
       z-index: 150;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(168, 85, 247, 0.4);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .rotate-btn-corner.show {
@@ -2032,7 +1997,7 @@
     
     .player-ad-overlay.show {
       display: flex;
-      animation: adFadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      animation: adFadeIn 0.4s cubic-bezier(0.15, 1, 0.3, 1);
     }
 
     @keyframes adFadeIn {
@@ -2109,7 +2074,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
       user-select: none;
     }
     .theme-btn-card:hover {
@@ -2174,7 +2139,7 @@
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
       user-select: none;
     }
     .category-pill:hover {
@@ -2203,7 +2168,7 @@
       padding: 2px 6px;
       border-radius: 6px;
       color: var(--text-muted);
-      transition: all 0.3s ease;
+      transition: background 0.15s ease, color 0.15s ease;
     }
     .category-pill.active .category-pill-count {
       background: rgba(var(--accent-rgb-primary, 168, 85, 247), 0.25);
@@ -2212,16 +2177,16 @@
 
     /* 3. Staggered Animations & Improved Shimmering Skeletons */
     .channel-card.fade-in-entry {
-      animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation: fadeInCard 0.25s ease both;
     }
-    @keyframes fadeInScale {
-      0% {
+    @keyframes fadeInCard {
+      from {
         opacity: 0;
-        transform: translateY(15px) scale(0.95);
+        transform: translateY(8px);
       }
-      100% {
+      to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
       }
     }
 
@@ -2323,19 +2288,15 @@
        ========================================================================== */
 
     /* 1. Desktop Sidebar Collapse (Theater Mode) */
-    body.sidebar-collapsed {
-      --sidebar-width: 0px !important;
-    }
     body.sidebar-collapsed .sidebar {
-      width: 0px !important;
+      margin-left: calc(-1 * var(--sidebar-width)) !important;
       border-right: none !important;
-      overflow: hidden !important;
-      box-shadow: none !important;
+      box-shadow: 0 0 0 rgba(0,0,0,0) !important;
       pointer-events: none;
     }
     .desktop-toggle-btn {
       display: flex !important;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
     }
     .desktop-toggle-btn:hover {
       background: rgba(168, 85, 247, 0.15) !important;
@@ -2349,28 +2310,9 @@
       }
     }
 
-    /* 2. Apple TV Style Glossy Card Sheen Sweep */
+    /* 2. Apple TV Style Glossy Card Sheen Sweep - disabled for performance */
     .channel-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -150%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: skewX(-25deg);
-      transition: none;
-      z-index: 8;
-      pointer-events: none;
-    }
-    .channel-card:hover::after {
-      left: 150%;
-      transition: left 0.8s ease;
+      display: none;
     }
 
     /* 3. Animated Buffer Waves (Circular Radar Ripples) */
@@ -2553,9 +2495,6 @@
         <!-- Video element -->
         <video id="videoPlayer" class="video-element" autoplay playsinline></video>
 
-        <!-- WebGL Upscaler Canvas (Renders over native video for advanced real-time upscaling) -->
-        <canvas id="gl-canvas" class="video-element" style="display:none; pointer-events:none; position:absolute; z-index:3;"></canvas>
-
         <!-- Dynamic Buffer Waves -->
         <div class="player-center-overlay">
           <div class="buffer-wave-container" id="bufferingSpinner">
@@ -2589,8 +2528,8 @@
             <span class="tech-hud-value" id="hudBandwidth">-</span>
           </div>
           <div class="tech-hud-row">
-            <span class="tech-hud-label">Upscaling:</span>
-            <span class="tech-hud-value" id="hudUpscaler">-</span>
+            <span class="tech-hud-label">Color Enhancer:</span>
+            <span class="tech-hud-value" id="hudColorEnhancer">Disabled</span>
           </div>
           <div class="tech-hud-row">
             <span class="tech-hud-label">FPS Render:</span>
@@ -2723,29 +2662,11 @@
                   </svg>
                 </button>
 
-                <!-- Ultimate AI Video Enhancer Toggle -->
-                <button class="control-btn" id="enhancerBtn" onclick="toggleVideoEnhancer()" title="Ultimate AI Video Enhancer (E)">
-                  <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none !important; stroke: none !important;">
-                    <rect x="2" y="6" width="15" height="15" rx="3.5" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important;" />
-                    <path d="M 5 13 v 4 h 4" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important; stroke-linecap: round; stroke-linejoin: round;" />
-                    <polygon points="8.5 11 8.5 16 12.5 13.5" style="fill: currentColor !important; stroke: none !important;" />
-                    <rect x="11.5" y="8.5" width="5.5" height="5" rx="1.2" style="stroke: currentColor !important; stroke-width: 1.5px !important; fill: none !important;" />
-                    <path d="M 12.7 12.2 L 13.7 9.8 L 14.7 12.2 M 13.2 11.4 H 14.2" style="stroke: currentColor !important; stroke-width: 1.2px !important; fill: none !important; stroke-linecap: round; stroke-linejoin: round;" />
-                    <path d="M 15.8 9.8 V 12.2" style="stroke: currentColor !important; stroke-width: 1.2px !important; fill: none !important; stroke-linecap: round;" />
-                    <path d="M20 1.5 c0 1.2 .6 1.8 1.8 1.8 c-1.2 0 -1.8 .6 -1.8 1.8 c0 -1.2 -.6 -1.8 -1.8 -1.8 c1.2 0 1.8 -.6 1.8 -1.8 z" style="fill: #f43f5e !important; stroke: none !important;" />
-                    <path d="M22.5 5.2 c0 .8 .4 1.2 1.2 1.2 c-.8 0 -1.2 .4 -1.2 1.2 c0 -.8 -.4 -1.2 -1.2 -1.2 c.8 0 1.2 -.4 1.2 -1.2 z" style="fill: #f43f5e !important; stroke: none !important;" />
-                  </svg>
-                </button>
-
-                <!-- AI HDR Dynamic Range Toggle -->
-                <button class="control-btn" id="hdrBtn" onclick="toggleAIHDR()" title="AI HDR Dynamic Range (H)">
-                  <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none !important; stroke: none !important;">
-                    <rect x="2" y="6" width="15" height="15" rx="3.5" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important;" />
-                    <path d="M 5 16 A 4.5 4.5 0 0 1 14 16" style="stroke: currentColor !important; stroke-width: 2px !important; fill: none !important; stroke-linecap: round;" />
-                    <path d="M 7.5 16 A 2 2 0 0 1 11.5 16" style="stroke: currentColor !important; stroke-width: 1.5px !important; fill: none !important; stroke-linecap: round;" />
-                    <circle cx="9.5" cy="11.5" r="1.5" style="fill: currentColor !important; stroke: none !important;" />
-                    <path d="M20 1.5 c0 1.2 .6 1.8 1.8 1.8 c-1.2 0 -1.8 .6 -1.8 1.8 c0 -1.2 -.6 -1.8 -1.8 -1.8 c1.2 0 1.8 -.6 1.8 -1.8 z" style="fill: #f43f5e !important; stroke: none !important;" />
-                    <path d="M22.5 5.2 c0 .8 .4 1.2 1.2 1.2 c-.8 0 -1.2 .4 -1.2 1.2 c0 -.8 -.4 -1.2 -1.2 -1.2 c.8 0 1.2 -.4 1.2 -1.2 z" style="fill: #f43f5e !important; stroke: none !important;" />
+                <!-- Vibrant Color Enhancer Toggle -->
+                <button class="control-btn" id="colorEnhancerBtn" onclick="toggleColorEnhancer()" title="Vibrant Color Enhancer (E)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2v20a10 10 0 0 0 0-20z" fill="currentColor"></path>
                   </svg>
                 </button>
 
@@ -2971,14 +2892,13 @@
           </div>
         </div>
 
-        <!-- AI Sharpening Strength Option -->
+        <!-- Vibrant Color Enhancer Option -->
         <div class="form-group" style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-          <label class="form-label">AI Sharpening Strength</label>
+          <label class="form-label">Vibrant Color Enhancer</label>
           <div class="glass-select-wrapper" style="position:relative; width:100%;">
-            <select id="enhancerStrengthSelect" class="glass-select" onchange="setEnhancerStrength(this.value)" style="width:100%;">
-              <option value="subtle">Subtle Cinematic (Recommended - sharp & clean)</option>
-              <option value="balanced">Balanced HD (Moderate edge definition)</option>
-              <option value="ultra">Ultra Sharp (High clarity details)</option>
+            <select id="colorEnhancerSelect" class="glass-select" onchange="setColorEnhancerState(this.value === 'enabled')" style="width:100%;">
+              <option value="disabled">Disabled (Standard colors)</option>
+              <option value="enabled">Enabled (Vibrant contrast & saturation)</option>
             </select>
           </div>
         </div>
@@ -3001,33 +2921,61 @@
       const normName = (name || '').toLowerCase();
       const normCat = (currentCat || '').toLowerCase();
 
+      // Check if it is a sports channel first to take precedence
+      if (
+        normName.includes('sport') || normName.includes('willow') || normName.includes('tenis') || 
+        normName.includes('tennis') || normName.includes('ten 1') || normName.includes('ten 2') || 
+        normName.includes('ten 5') || normName.includes('select1') || normName.includes('select2') || 
+        normName.includes('tsports') || normName.includes('t sports') || normName.includes('espn') || 
+        normName.includes('golf') || normName.includes('fighters') || normName.includes('combat') || 
+        normName.includes('wwe') || normCat.includes('sports') || normCat.includes('sport') || 
+        normName.includes('nfl') || normName.includes('nba') || normName.includes('goal tv') || 
+        normName.includes('select 1') || normName.includes('select 2') || normName.includes('sports') ||
+        normName.includes('fifa') || normName.includes('world cup') || normName.includes('combate') ||
+        normName.includes('tsn') || normName.includes('premier lig') || normName.includes('laliga') ||
+        normName.includes('serie a') || normName.includes('bundesliga') || normName.includes('ligue 1') ||
+        normName.includes('champions league') || normName.includes('football') || normName.includes('soccer') ||
+        normName.includes('eurosport') || normName.includes('bein') || normName.includes('dazn') ||
+        normName.includes('ziggo') || normName.includes('cosmote') || normName.includes('sportklub') ||
+        normName.includes('max sport') || normName.includes('prima sport') || normName.includes('digi sport') ||
+        normName.includes('polsat sport') || normName.includes('viasat sport') || normName.includes('tv2 sport') ||
+        normName.includes('tv4 sport') || normName.includes('setanta') || normName.includes('super sport') ||
+        normName.includes('supersport') || normName.includes('sky sport') || normName.includes('t sports') ||
+        normName.includes('a sports') || normName.includes('ptv sports') || normName.includes('willow cricket') ||
+        normName.includes('willow sports') || normName.includes('sunsport') || normName.includes('ten sports') ||
+        normName.includes('starsports') || normName.includes('star sports') || normName.includes('sony sports') ||
+        normName.includes('sony ten') || normName.includes('sony six') || normName.includes('skysports') ||
+        normName.includes('astro cricket') || normName.includes('astro supersport') || normName.includes('astro arena') ||
+        normName.includes('optus sport')
+      ) {
+        const exclusions = [
+          'star news', 'sky news', 'fox news', 'fox business', 'buddystar', 'kids stars', 
+          'star plus', 'star jalsha', 'star gold', 'star movies', 'sony entertainment', 'sony sab', 
+          'sony max', 'sony aath', 'sony pix', 'sky cinema', 'sky crime', 'sky arts', 'sky atlantic',
+          'tf1', 'nagorik', 'gtv', 'gazi'
+        ];
+        if (!exclusions.some(ex => normName.includes(ex))) {
+          return 'Sports';
+        }
+      }
+
       if (normCat === 'akash') {
         return 'Akash';
       }
-
+      if (normCat === 'sky') {
+        return 'Sky';
+      }
 
       // 1. Kids
-  if (normName.includes('cartoon') || normName.includes('baby tv') || normName.includes('cbeebies') || 
-      normName.includes('kids') || normName.includes('junior') || normName.includes('gopal bhar') || 
-      normName.includes('motu patlu') || normName.includes('jungle book') || normName.includes('tooncast') || 
-      normName.includes('cartoonito') || normName.includes('doraemon') || normName.includes('disney') || 
-      normName.includes('nick') || normName.includes('spacetoon') || normName.includes('boomer') || 
-      normName.includes('gubbare') || normName.includes('funny') || normName.includes('smarty') || 
-      normCat.includes('kids') || normCat.includes('infantil') || normCat.includes('child')) {
-    return 'Kids';
-  }
-
-  // 2. Sports
-  if (normName.includes('sport') || normName.includes('willow') || normName.includes('tenis') || 
-      normName.includes('tennis') || normName.includes('ten 1') || normName.includes('ten 2') || 
-      normName.includes('ten 5') || normName.includes('select1') || normName.includes('select2') || 
-      normName.includes('tsports') || normName.includes('t sports') || normName.includes('espn') || 
-      normName.includes('golf') || normName.includes('fighters') || normName.includes('combat') || 
-      normName.includes('wwe') || normCat.includes('sports') || normCat.includes('sport') || 
-      normName.includes('nfl') || normName.includes('nba') || normName.includes('goal tv') || 
-      normName.includes('select 1') || normName.includes('select 2') || normName.includes('sports')) {
-    return 'Sports';
-  }
+      if (normName.includes('cartoon') || normName.includes('baby tv') || normName.includes('cbeebies') || 
+          normName.includes('kids') || normName.includes('junior') || normName.includes('gopal bhar') || 
+          normName.includes('motu patlu') || normName.includes('jungle book') || normName.includes('tooncast') || 
+          normName.includes('cartoonito') || normName.includes('doraemon') || normName.includes('disney') || 
+          normName.includes('nick') || normName.includes('spacetoon') || normName.includes('boomer') || 
+          normName.includes('gubbare') || normName.includes('funny') || normName.includes('smarty') || 
+          normCat.includes('kids') || normCat.includes('infantil') || normCat.includes('child')) {
+        return 'Kids';
+      }
 
   // 3. Bangla Channels (Consolidate local news/entertainment/movies)
   if (normName.includes('somoy') || normName.includes('independent') || normName.includes('jamuna') || 
@@ -3048,7 +2996,8 @@
       normCat.includes('bengali') || normName.includes('amar bangla') || normName.includes('movietv') ||
       normName.includes('bijoy tv') || normName.includes('desh tv') || normName.includes('ekhon tv') ||
       normName.includes('bhi channel') || normName.includes('etv') || normName.includes('zeebangla') ||
-      normName.includes('sony aath') || normName.includes('star jalsha') || normName.includes('channel i')) {
+      normName.includes('sony aath') || normName.includes('star jalsha') || normName.includes('channel i') ||
+      normName.includes('nagorik')) {
     return 'Bangla';
   }
 
@@ -3148,7 +3097,54 @@
     
     // Statically embedded verified working BDIX IPTV channels
     const STATIC_BDIX_CHANNELS = [
-
+  {
+    "name": "FIFA World Cup 2026🅱️",
+    "url": "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "FIFA World Cup 2026",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "FIFA World Cup 2026 🇦🇷[coming]",
+    "url": "http://cdn.tv-rds.workers.dev/TYCSPT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "FIFA World Cup 2026 🇧🇷[coming]",
+    "url": "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "FIFA World Cup 2026 🇮🇳[coming]",
+    "url": "http://66.102.126.10:8000/play/a022/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Football World Cup 2026",
+    "url": "https://tvsen5.aynaott.com/PtvSports/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Live Sports-8 (FIFA World Cup)",
+    "url": "http://103.204.43.87:8080/live/1/1/264.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Live Sports-9 (FIFA World Cup)",
+    "url": "http://103.204.43.87:8080/live/1/1/254.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
   {
     "name": "Somoy TV",
     "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png",
@@ -3314,7 +3310,7 @@
   {
     "name": "Sports Legends",
     "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770377900139.png",
-    "category": "Akash",
+    "category": "Sports",
     "url": "https://nomawnoijl.gpcdn.net/akash/sportslegends/playlist.m3u8"
   },
   {
@@ -3386,7 +3382,7 @@
   {
     "name": "Sports Range",
     "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380601958.png",
-    "category": "Akash",
+    "category": "Sports",
     "url": "https://nomawnoijl.gpcdn.net/akash/sportrange/playlist.m3u8"
   },
   {
@@ -3398,7 +3394,7 @@
   {
     "name": "Fighters",
     "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380942670.png",
-    "category": "Akash",
+    "category": "Sports",
     "url": "https://nomawnoijl.gpcdn.net/akash/fighter/playlist.m3u8"
   },
   {
@@ -4466,7 +4462,7 @@
   {
     "name": "GAZI TV",
     "logo": "https://i.ibb.co/pQGXzMP/images-1-removebg-preview.png",
-    "category": "Sports",
+    "category": "Bangla",
     "url": "https://tvsen5.aynaott.com/Ravc7gPCZpxk/index.m3u8"
   },
   {
@@ -4834,280 +4830,2690 @@
     "logo": "https://assets-prod.services.toffeelive.com/f_webp,w_240,q_100/OnSlPJYBcqxnFHJB6lFX/posters/ec7c3650-7240-4332-b766-cd1c850533ef.png",
     "category": "​🇮​​🇳​​🇩​​🇮​​🇦​",
     "url": "http://212.102.34.8:9080/ZeeBollywood/video.m3u8"
+  },
+  {
+    "name": "FRA beIN SPORTS 1",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/BeIN_Sports_logo.svg/512px-BeIN_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/659037.ts"
+  },
+  {
+    "name": "FRA beIN SPORTS 2",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/BeIN_Sports_logo.svg/512px-BeIN_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/659038.ts"
+  },
+  {
+    "name": "FRA beIN SPORTS 3",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/BeIN_Sports_logo.svg/512px-BeIN_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/659039.ts"
+  },
+  {
+    "name": "FRA beIN SPORTS MAX 4",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/BeIN_Sports_logo.svg/512px-BeIN_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/659179.ts"
+  },
+  {
+    "name": "FRA beIN SPORTS MAX 5",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/BeIN_Sports_logo.svg/512px-BeIN_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/659180.ts"
+  },
+  {
+    "name": "DSTV SuperSport Mximo 2",
+    "logo": "https://supersport-cms-prod.azureedge.net/media/m3ldhapr/maximo-1.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/44220.ts"
+  },
+  {
+    "name": "DSTV SuperSport OTT 7",
+    "logo": "https://supersport-cms-prod.azureedge.net/media/q24jrjac/supersport-ott-7.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/137532.ts"
+  },
+  {
+    "name": "SUPERSPORTS PSL",
+    "logo": "https://03mcdecdnimagerepository.blob.core.windows.net/epguideimage/channel/SH2.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/271039.ts"
+  },
+  {
+    "name": "AU FOX Sports 501",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/512px-Fox_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/415534.ts"
+  },
+  {
+    "name": "AU FOX Sports 502",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/512px-Fox_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/415535.ts"
+  },
+  {
+    "name": "NFL SKY SPORTS",
+    "logo": "https://i.ibb.co/DWY5WTL/images.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/402095.ts"
+  },
+  {
+    "name": "UK SKY SPORTS MAIN EVENTS",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Sky_Sports_logo.svg/512px-Sky_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/384215.ts"
+  },
+  {
+    "name": "SKY SPORTS 2",
+    "logo": "https://i.ibb.co/p4knk5y/images-4.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/384216.ts"
+  },
+  {
+    "name": "SKY SPORTS 1",
+    "logo": "https://i.ibb.co/p4knk5y/images-4.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/384222.ts"
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT UK",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Sky_Sports_logo.svg/512px-Sky_Sports_logo.svg.png",
+    "category": "Sports",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/581305.ts"
+  },
+  {
+    "name": "A SPORTS HD",
+    "url": "https://tvsen6.aynaott.com/asports/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Euro Sports",
+    "url": "https://stream.ottplus.bd/live/euro_sports_hd_abr/live/euro_sports_hd/chunks.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "T SPORTS",
+    "url": "https://amitomar.bdixbd.net/hoichoi.pro1/tracks-v1/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "PTV SPORTS HD",
+    "url": "https://tvsen5.aynaott.com/PtvSports/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "STAR SPORTS 1",
+    "url": "https://tvsen7.aynaott.com/sspts1/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "WILLOW LIVE",
+    "url": "https://tvsen5.aynaott.com/willowhd/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "beIN sports Xtra",
+    "url": "https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Golf Channel",
+    "url": "https://tvsen6.aynaott.com/golfchannel/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ESPN",
+    "url": "http://cdn.tv-rds.workers.dev/ESPNARG.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TSN 1",
+    "url": "https://tvsen7.aynaott.com/tsn1/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TSN 2",
+    "url": "https://tvsen7.aynaott.com/tsn2/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TSN 3",
+    "url": "https://tvsen7.aynaott.com/tsn3/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Sports Grid",
+    "url": "https://tvsen6.aynaott.com/SportsGrid/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Bloomberg TV",
+    "url": "https://tvsen6.aynaott.com/bloombergtv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NFL Network",
+    "url": "https://tvsen6.aynaott.com/nfl/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "REAL MADRID",
+    "url": "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "[Fighting] WWE Smackdown (ROXIE)",
+    "url": "https://601.formaturamaxi.com.br/wwe.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "beIN sports Xtra HD",
+    "url": "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Star Sports 2 Hindi HD (1080p)",
+    "url": "http://103.157.248.140:8000/play/a01m/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Willow Sports (1080p)",
+    "url": "https://d36r8jifhgsk5j.cloudfront.net/Willow_TV.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SONY LIV",
+    "url": "http://live.balajibroadband.com:3500/live/892.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN COMBAT",
+    "url": "https://dazn-combat-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-dazn-combat-rakuten/CDN/master.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Star Sports 1 Hindi",
+    "url": "http://103.157.248.140:8000/play/a00g/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Star Sports 1 HD",
+    "url": "https://tvsen7.aynaott.com/sspts1/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "STAR SPORTS KHEL",
+    "url": "http://103.175.73.12:8080/live/151/151_0.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Trace Sport",
+    "url": "https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY SPORTS ACTION",
+    "url": "http://6zirt9yx.otttv.pw/iptv/HEGN4VXXQQSYCA/9155/index.m3u",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Hub Sports 2 HD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/280823.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Hub Sports 3 HD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/280824.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Hub Sports 4 HD",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/148161.ts",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Hub Sports 5 HD",
+    "url": "https://rgkkw.live:443/live/1Aoen7elp5/IgMJ60tmAa/148162.ts",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Sky Sport1 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579826.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport2 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579825.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport3 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579824.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport4 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579823.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport5 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579822.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport6 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579821.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sky Sport7 NZ FHD",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579820.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "beIN SPORTS 4 HD",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6125/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "beIN SPORTS 5 HD",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6126/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "beIN SPORTS 6 HD",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6127/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "beIN SPORTS 7 HD",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6128/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "BEIN SPORTS 1 FRANCE",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/2499/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "BEIN SPORTS 2 FRANCE",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/2500/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "BEIN SPORTS 3 FRANCE",
+    "url": "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/2501/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SPORT KLUB 1",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/227232.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORT KLUB 3",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/227234.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORT KLUB 4",
+    "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/227235.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TRT SPOR TURKEY",
+    "url": "http://cdn.tv-rds.workers.dev/TRTSPOR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SportKlub 2 RS",
+    "url": "http://cdn.tv-rds.workers.dev/SportKlub2RS.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTKLUB 1 RS",
+    "url": "http://cdn.tv-rds.workers.dev/SportKlub1RS.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY ATLANTIC DEUTSCHLAND",
+    "url": "http://cdn.tv-rds.workers.dev/SkyAtlanticDE.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "WILLOW CRICKET",
+    "url": "http://cdn.tv-rds.workers.dev/WillowCricket.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MAX SPORT 4 BG",
+    "url": "http://cdn.tv-rds.workers.dev/MaxSport4BG.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "PRIMA SPORT 5",
+    "url": "http://cdn.tv-rds.workers.dev/PrimaSport5.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TIVIBU SPOR 3 TURKEY",
+    "url": "http://cdn.tv-rds.workers.dev/TivibuSPOR3.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MAX SPORT 2 BG",
+    "url": "http://cdn.tv-rds.workers.dev/MaxSport2BG.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COMBATE BRASIL",
+    "url": "http://cdn.tv-rds.workers.dev/Combate.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COSMOTE SPORT 5 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport5.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BEIN SPORTS 1",
+    "url": "http://cdn.tv-rds.workers.dev/beINSPORTS1TR.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SKY CINEMA ACTION UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyCinemaActionUK.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "SKY CRIME UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyCrimeUK.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN 1 FR",
+    "url": "http://cdn.tv-rds.workers.dev/DAZN1FR.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN F1 ES",
+    "url": "http://cdn.tv-rds.workers.dev/DAZNF1ES.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DUBAI RACING",
+    "url": "http://cdn.tv-rds.workers.dev/DubaiRacing.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "PRIMA SPORT",
+    "url": "http://cdn.tv-rds.workers.dev/PrimaSport1.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ZIGGO SPORT 5",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport5.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cosmote Sport 2 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COSMOTE SPORT 7 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport7.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY ARTS UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyArtsUK.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ESPN 3 BRASIL",
+    "url": "http://cdn.tv-rds.workers.dev/ESPN3BR.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SKY SPORT GOLF DE",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportGolfDE.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY SPORT GOLF IT",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportGolfIT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TV4 SPORT LIVE 4 SWEDEN",
+    "url": "http://cdn.tv-rds.workers.dev/TV4SportLive4.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN 1 ES",
+    "url": "http://cdn.tv-rds.workers.dev/DAZN1ES.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ziggo Sport NL",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CNEWS",
+    "url": "http://cdn.tv-rds.workers.dev/CNewsFR.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "TVA SPORTS",
+    "url": "http://cdn.tv-rds.workers.dev/TVASports.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Cosmote Sport 3 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CANAL+ FOOT FR",
+    "url": "http://cdn.tv-rds.workers.dev/FootPlusFR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cosmote Sport 9 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport9.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MOTOWIZJA",
+    "url": "http://cdn.tv-rds.workers.dev/Motowizja.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NOVA SPORTS START GR",
+    "url": "http://cdn.tv-rds.workers.dev/NOVASPORTSST.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SPORT LIVE DENMARK",
+    "url": "http://cdn.tv-rds.workers.dev/SPORTLIVE.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ER1 FR",
+    "url": "http://cdn.tv-rds.workers.dev/ER1FR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ZIGGO SPORT 3 NL",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ELEVEN SPORTS 2 PL",
+    "url": "http://cdn.tv-rds.workers.dev/ElevenSports2PL.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "ABU DHABI SPORTS 1",
+    "url": "http://cdn.tv-rds.workers.dev/AbuDhabiSports1.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SKY SPORT 24 IT",
+    "url": "http://cdn.tv-rds.workers.dev/SkySport24IT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TSN1",
+    "url": "http://cdn.tv-rds.workers.dev/TSN1.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "MUTV UK",
+    "url": "http://cdn.tv-rds.workers.dev/MUTV.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "PRIMA SPORT 3",
+    "url": "http://cdn.tv-rds.workers.dev/PrimaSport3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTSNET 360",
+    "url": "http://cdn.tv-rds.workers.dev/Sportsnet360.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "DAZN 1",
+    "url": "http://cdn.tv-rds.workers.dev/ZonaDAZN.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COSMOTE SPORT 1 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport1.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "EUROSPORT 2 PL",
+    "url": "http://cdn.tv-rds.workers.dev/Eurosport2PL.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "EUROSPORT 1 RS",
+    "url": "http://cdn.tv-rds.workers.dev/EUROSPORT1RS.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "POLSAT SPORT PL",
+    "url": "http://cdn.tv-rds.workers.dev/PolsatSportPL.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cosmote Sport 6 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport6.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "LA7",
+    "url": "http://cdn.tv-rds.workers.dev/La7.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ziggo Sport 4 NL",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport4.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "EUROSPORT 1 RO",
+    "url": "http://cdn.tv-rds.workers.dev/Eurosport1RO.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TNT SPORTS ARG",
+    "url": "http://cdn.tv-rds.workers.dev/TNTSARG.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "SKY SPORT MOTO GP IT",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportMotoGPIT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "VIASAT SPORT 1 SWEDEN",
+    "url": "http://cdn.tv-rds.workers.dev/ViasatSportSE.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTV 3 BRASIL",
+    "url": "http://cdn.tv-rds.workers.dev/Sportv3BR.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ESPN 2",
+    "url": "http://cdn.tv-rds.workers.dev/ESPN2ARG.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "ARENA SPORT 2 HR",
+    "url": "http://cdn.tv-rds.workers.dev/ArenaSport2HR.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TV 2 SPORT 2 NORWAY",
+    "url": "http://cdn.tv-rds.workers.dev/TV2Sport2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY SPORT MIX DE",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportMixDE.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BEIN SPORTS 3 TURKEY",
+    "url": "http://cdn.tv-rds.workers.dev/beINSPORTS3TR.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TV4 SPORT LIVE 2 SWEDEN",
+    "url": "http://cdn.tv-rds.workers.dev/TV4SportLive2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ziggo Sport 2 NL",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TV4 FOTBALL SWEDEN",
+    "url": "http://cdn.tv-rds.workers.dev/TV4Fotball.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ITV4 UK",
+    "url": "http://cdn.tv-rds.workers.dev/ITV4.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DUBAI SPORTS 2",
+    "url": "http://cdn.tv-rds.workers.dev/DubaiSports2.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TSN3",
+    "url": "http://cdn.tv-rds.workers.dev/TSN3.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "POLSAT SPORT PREMIUM 2",
+    "url": "http://cdn.tv-rds.workers.dev/PolsatSportPremium2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ART SPORT 1 XK",
+    "url": "http://cdn.tv-rds.workers.dev/ARTSport1.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "POLSAT SPORT 3 PL",
+    "url": "http://cdn.tv-rds.workers.dev/PolsatSportNews.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY CINEMA GREATS UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyCinemaGreatsUK.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "M6",
+    "url": "http://cdn.tv-rds.workers.dev/M6FR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTKLUB 3 RS",
+    "url": "http://cdn.tv-rds.workers.dev/SportKlub3RS.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ARENA SPORT 6 HR",
+    "url": "http://cdn.tv-rds.workers.dev/ArenaSport6HR.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN 3 ES",
+    "url": "http://cdn.tv-rds.workers.dev/DAZN3ES.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTITALIA",
+    "url": "http://cdn.tv-rds.workers.dev/Sportitalia.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORT 1 CZECH",
+    "url": "http://cdn.tv-rds.workers.dev/Sport1CZ.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "EUROSPORT 2 UK",
+    "url": "http://cdn.tv-rds.workers.dev/Eurosport2UK.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY SPORT TENNIS IT",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportTennisIT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TENNIS CHANNEL",
+    "url": "http://cdn.tv-rds.workers.dev/TennisChannel.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DIGI SPORT 1",
+    "url": "http://cdn.tv-rds.workers.dev/DigiSport1.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ARENA SPORT 4 HR",
+    "url": "http://cdn.tv-rds.workers.dev/ArenaSport4HR.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ESPN EXTRA ARG",
+    "url": "http://cdn.tv-rds.workers.dev/ESPNPLUSARG.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "DIGI SPORT 3",
+    "url": "http://cdn.tv-rds.workers.dev/DigiSport3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY CINEMA PREMIERE UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyCinemaPremiereUK.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "SKY SPORT MIX IT",
+    "url": "http://cdn.tv-rds.workers.dev/SkySportMixIT.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ITV2 UK",
+    "url": "http://cdn.tv-rds.workers.dev/ITV2.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NOVA SPORTS PREMIER LEAGUE GR",
+    "url": "http://cdn.tv-rds.workers.dev/NOVASPORTSPL.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "EUROSPORT 1 CZECH",
+    "url": "http://cdn.tv-rds.workers.dev/Eurosport1CZ.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SKY CINEMA THRILLER UK",
+    "url": "http://cdn.tv-rds.workers.dev/SkyCinemaThrillerUK.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "PREMIER SPORTS 2 UK",
+    "url": "http://cdn.tv-rds.workers.dev/PremierSports2.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Cosmote Sport 8 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport8.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "UDAR RU",
+    "url": "http://cdn.tv-rds.workers.dev/UDAR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SPORTSNET WEST",
+    "url": "http://cdn.tv-rds.workers.dev/SportsnetWest.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TIVIBU SPOR TURKEY",
+    "url": "http://cdn.tv-rds.workers.dev/TivibuSPOR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ELEVEN SPORTS 4 PL",
+    "url": "http://cdn.tv-rds.workers.dev/ElevenSports4PL.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "TV4 TENNIS SWEDEN",
+    "url": "http://cdn.tv-rds.workers.dev/TV4Tennis.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DAZN 2",
+    "url": "http://cdn.tv-rds.workers.dev/DAZN2DE.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "S4C UK",
+    "url": "http://cdn.tv-rds.workers.dev/S4CUK.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cosmote Sport 4 GR",
+    "url": "http://cdn.tv-rds.workers.dev/CosmoteSport4.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "GOLD UK",
+    "url": "http://cdn.tv-rds.workers.dev/GoldUK.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BEIN SPORTS 5 TURKEY",
+    "url": "http://cdn.tv-rds.workers.dev/beINSPORTS5TR.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "EUROSPORT 2 DENMARK",
+    "url": "http://cdn.tv-rds.workers.dev/Eurosport2DK.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TF1",
+    "url": "http://cdn.tv-rds.workers.dev/TF1FR.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "POLSAT SPORT FIGHT PL",
+    "url": "http://cdn.tv-rds.workers.dev/PolsatSportFight.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ziggo Sport 6 NL",
+    "url": "http://cdn.tv-rds.workers.dev/ZiggoSport6.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SportKlub 4 RS",
+    "url": "http://cdn.tv-rds.workers.dev/SportKlub4RS.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dazn Eleven 1",
+    "url": "http://znty.dyndns.org:5010/hls/eleven1.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dazn Eleven 2",
+    "url": "http://znty.dyndns.org:5010/hls/eleven2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dazn Eleven 3",
+    "url": "http://znty.dyndns.org:5010/hls/eleven3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dazn Eleven 4",
+    "url": "http://znty.dyndns.org:5010/hls/eleven4.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dazn Eleven 5",
+    "url": "http://znty.dyndns.org:5010/hls/eleven5.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "İspanya La Liga 2",
+    "url": "https://andro.226503.xyz/checklist/androstreamlivess1.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "İskoçya Premier Lig",
+    "url": "https://andro.226503.xyz/checklist/androstreamliveexn2.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "İngiltere Premier Lig",
+    "url": "https://andro.226503.xyz/checklist/androstreamlivebs3.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "2TV Sport 🇳🇴",
+    "url": "https://tv.cdn.xsg.ge/gpb-2tv/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TUDN HD",
+    "url": "https://futbol9865.ultratv13.workers.dev/deportivo111/68.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TUDN HD OP2",
+    "url": "https://futbol9865.ultratv13.workers.dev/deportivo111/106.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TUDN HD OP3",
+    "url": "https://futbol9865.ultratv13.workers.dev/deportivo111/107.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Setenta Sport 1 🇷🇺",
+    "url": "http://cdntv.online/low/9mlxywika2/1021.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "МАТЧ! ФУТБOЛ 1HD 🇷🇺",
+    "url": "http://cdntv.online/low/9mlxywika2/55.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "МАТЧ! ФУТБOЛ 3HD 🇷🇺",
+    "url": "http://cdntv.online/low/9mlxywika2/57.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sportdigital 🇩🇪",
+    "url": "https://jmp2.uk/stvp-ATAJ0500433A",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ZIGGO SPORT 2 HD 🇳🇱",
+    "url": "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2561/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ZIGGO SPORT 3 HD 🇳🇱",
+    "url": "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2559/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ZIGGO SPORT LIVE 🇳🇱",
+    "url": "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2560/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "5 SPORT 🇮🇱",
+    "url": "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2558/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CAZE TV 1 🇧🇷",
+    "url": "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/Caze_TV.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TELEMUNDO 🇲🇽",
+    "url": "https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MTR Sports-1 🇬🇧",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02873-kravemedia-mtrspt1-distrotv/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "X SPORT 🇷🇺",
+    "url": "http://iptv.prosto.tv:7000/ch109/video.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TR Sport (480p) 🇮🇹",
+    "url": "https://livetr.teleromagna.it/mia/live/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "L`Equipe 🇫🇷",
+    "url": "https://jmp2.uk/stvp-FR200016Y5",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ON Sports+ 🇭🇰",
+    "url": "https://freem3u.xyz/api/live/play.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Fox Sports 🇮🇳",
+    "url": "http://y3fqd48g.megatv.fun/iptv/NRLXRWSBWBPLN4/19146/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "MASR 🇶🇦",
+    "url": "https://shls-masr-ak.akamaized.net/out/v1/d5036cabf11e45bf9d0db410ca135c18/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TELETRAK 🇨🇱",
+    "url": "http://unlimited6-cl.dps.live/sportinghd/sportinghd.smil/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sport5 🇮🇱",
+    "url": "https://rgelive.akamaized.net/hls/live/2043095/live3/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Fox Sports | Server 6",
+    "url": "https://tvsen7.aynaott.com/foxsports2/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Ekushey TV",
+    "url": "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Deepto TV",
+    "url": "https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Somoy TV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Jamuna TV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DBC News HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Maasranga TV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ekattor HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel 24 HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ATN News",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "News 24 HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Star News",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Islamic TV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1724/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Deepto TV HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1711/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel 9 HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel I HD",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cineedge HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/cineedge/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Uniques HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/uniques/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Superrix HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/superrix/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Bangla Vision",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NTV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Screem",
+    "url": "https://nomawnoijl.gpcdn.net/akash/screem/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sports Legends",
+    "url": "https://nomawnoijl.gpcdn.net/akash/sportslegends/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Flash Guys HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/flashguys/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BuddyStar HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/buddystar/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Luxel HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/luxell/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Joy",
+    "url": "https://nomawnoijl.gpcdn.net/akash/joy/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Funny Junior HD",
+    "url": "https://nomawnoijl.gpcdn.net/akash/funnyjunior/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Crimes",
+    "url": "https://nomawnoijl.gpcdn.net/akash/crimes/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "True Stories",
+    "url": "https://nomawnoijl.gpcdn.net/akash/truestories/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Intelligence",
+    "url": "https://nomawnoijl.gpcdn.net/akash/intelligence/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sports Range",
+    "url": "https://nomawnoijl.gpcdn.net/akash/sportrange/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Thunder Er",
+    "url": "https://nomawnoijl.gpcdn.net/akash/thunder/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Fighters",
+    "url": "https://nomawnoijl.gpcdn.net/akash/fighter/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Smarty",
+    "url": "https://nomawnoijl.gpcdn.net/akash/smarty/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Lucky Family",
+    "url": "https://nomawnoijl.gpcdn.net/akash/luckyfamily/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Kids Stars",
+    "url": "https://nomawnoijl.gpcdn.net/akash/kidsstars/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BTV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Al Jazeera",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1721/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Party Universe",
+    "url": "https://nomawnoijl.gpcdn.net/akash/partyuniverse/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Al Quran",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1713/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Independent TV",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Nikki",
+    "url": "https://nomawnoijl.gpcdn.net/akash/nikky/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Originals",
+    "url": "https://nomawnoijl.gpcdn.net/akash/originals/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Crazy Ex",
+    "url": "https://nomawnoijl.gpcdn.net/akash/crazy_ex/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Delicious",
+    "url": "https://nomawnoijl.gpcdn.net/akash/delicious/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel I",
+    "url": "https://tvsen6.aynaott.com/channeli/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel S",
+    "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/chsukoff.stream/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NTV",
+    "url": "https://tvsen5.aynaott.com/ntvbd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Bangla Vision",
+    "url": "https://tvsen5.aynaott.com/banglavision/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "RTV",
+    "url": "https://tvsen5.aynaott.com/RtvHD/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ATN Bangla",
+    "url": "https://tvsen5.aynaott.com/atnbangla/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ETV",
+    "url": "https://tvsen6.aynaott.com/etv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Maasranga TV",
+    "url": "https://tvsen5.aynaott.com/maasrangatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Deepto TV",
+    "url": "https://tvsen5.aynaott.com/DeeptoTVHD/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Gazi TV",
+    "url": "https://tvsen5.aynaott.com/Ravc7gPCZpxk/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Desh TV",
+    "url": "https://tvsen6.aynaott.com/deshtv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Boishakhi TV",
+    "url": "https://tvsen6.aynaott.com/boishakhitv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Channel 9",
+    "url": "https://tvsen6.aynaott.com/channel9/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Asian TV",
+    "url": "https://tvsen6.aynaott.com/asiantv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SA TV",
+    "url": "https://tvsen6.aynaott.com/satv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Duronto TV",
+    "url": "https://tvsen6.aynaott.com/durontotv-live/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Bangla TV",
+    "url": "https://tvsen6.aynaott.com/banglatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BTV NATIONAL HD",
+    "url": "https://tvsen6.aynaott.com/btvhd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Ananda TV",
+    "url": "https://tvsen6.aynaott.com/anandatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "My TV",
+    "url": "https://tvsen6.aynaott.com/mytv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Global TV",
+    "url": "https://tvsen6.aynaott.com/globaltvhd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Bijoy TV",
+    "url": "https://tvsen6.aynaott.com/bijoytv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NEXUS TV",
+    "url": "https://tvsen6.aynaott.com/nexustv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Mohona TV",
+    "url": "https://tvsen6.aynaott.com/mohonatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BTV World",
+    "url": "https://tvsen6.aynaott.com/btv_world/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BTV CTG",
+    "url": "https://tvsen6.aynaott.com/btvctg/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ABC News",
+    "url": "https://tvsen6.aynaott.com/AbcNews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "BTV News",
+    "url": "https://tvsen6.aynaott.com/BTVNews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Somoy News TV",
+    "url": "https://tvsen6.aynaott.com/somoytv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Channel 24",
+    "url": "https://tvsen6.aynaott.com/channel24/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ATN News",
+    "url": "https://tvsen6.aynaott.com/atnnews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Independent TV",
+    "url": "https://tvsen6.aynaott.com/independenttv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DBC News",
+    "url": "https://tvsen6.aynaott.com/dbcnews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Ekhon TV",
+    "url": "https://tvsen6.aynaott.com/ekhontv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "News 24 BD",
+    "url": "https://tvsen6.aynaott.com/news24/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Ekattor TV",
+    "url": "https://tvsen6.aynaott.com/ekattorbdtv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Jamuna TV",
+    "url": "https://tvsen6.aynaott.com/jamunatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CNN",
+    "url": "https://tvsen6.aynaott.com/cnn/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "DW News",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "NHK World",
+    "url": "https://tvsen6.aynaott.com/nhkworld/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Wion",
+    "url": "https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ANB News",
+    "url": "https://tvsen6.aynaott.com/ANB_News/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "News 1 India",
+    "url": "https://tvsen6.aynaott.com/News1India/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Sadhna Prime News",
+    "url": "https://tvsen6.aynaott.com/SadhnaPrimeNews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Star News",
+    "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/1701.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Sky News",
+    "url": "https://tvsen5.aynaott.com/skynews/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Hindi Khabar",
+    "url": "https://tvsen7.aynaott.com/HindiKhabar/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "News Nation",
+    "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/6cd2f649739a45ca9de1daf81cc7d0f2/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "T Sports HD",
+    "url": "https://tvsen7.aynaott.com/tsports-hd/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Cricket Gold",
+    "url": "https://tvsen6.aynaott.com/CricketGold/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Bleav Football",
+    "url": "https://linear-493.frequency.stream/dist/glewedtv/493/hls/master/playlist.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Fox Sports 2",
+    "url": "https://tvsen7.aynaott.com/foxsports2/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Espn",
+    "url": "https://tvsen5.aynaott.com/espn/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Talk Sport",
+    "url": "https://tvsen6.aynaott.com/talkSPORT/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sports First TV",
+    "url": "https://d4ddgdmj1cvnm.cloudfront.net/scheduler/scheduleMaster/409.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Marquee Sports Network",
+    "url": "https://tvsen6.aynaott.com/MarqueeSportsNetwork/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "WOF 1",
+    "url": "https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-mainstreammediafreesportsintl-rakuten/CDN/master.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "R Plus",
+    "url": "https://thelegitpro.in/pntv/rplusnews24x7/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Republic Bangla",
+    "url": "https://tvsen5.aynaott.com/R_Bangla/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Zee 24 Ghanta",
+    "url": "https://tvsen6.aynaott.com/zee24/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "kolkata TV",
+    "url": "https://tvsen6.aynaott.com/kolkatatv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "pix 11",
+    "url": "https://tvsen6.aynaott.com/pix11/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AMC TV",
+    "url": "https://tvsen6.aynaott.com/amc/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AXS",
+    "url": "https://tvsen6.aynaott.com/axs/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TBS",
+    "url": "https://cdntv.tbs.seoul.kr/tbs/tbs_tv_web.smil/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Travel XP",
+    "url": "https://27c980761ff9437d929e64647afe183a.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-eu_TravelXP/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Wild TV",
+    "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Movie Sphere",
+    "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Rakuten Movies",
+    "url": "https://0145451975a64b35866170fd2e8fa486.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5987/master.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "World War TV",
+    "url": "https://aenetworks-worldwartv-rakuten.amagi.tv/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CMAC TV",
+    "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-2/live.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "RDS Social TV",
+    "url": "https://tvsen6.aynaott.com/RDSSocialTV/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "HBO",
+    "url": "https://tvsen5.aynaott.com/hbo/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Fox business",
+    "url": "https://tvsen6.aynaott.com/foxbusiness/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Fox 5",
+    "url": "https://tvsen6.aynaott.com/fox5/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Discovery Family",
+    "url": "https://tvsen5.aynaott.com/discoveryfamily/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Animal Planet HD",
+    "url": "https://tiger-hub.vercel.app@vodzong.mjunoon.tv:8087/streamtest/Animal-Planet-158-3/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "BRAVO",
+    "url": "https://tvsen7.aynaott.com/bravo/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COMEDY CENTRAL",
+    "url": "https://tvsen7.aynaott.com/comedycentral/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "COOKING TV",
+    "url": "https://tvsen7.aynaott.com/cooking/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "EPIX TV",
+    "url": "https://tvsen7.aynaott.com/epix/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "FX TV",
+    "url": "https://tvsen7.aynaott.com/fx/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Food Network",
+    "url": "https://tvsen6.aynaott.com/foodnetwork/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "HBO 2",
+    "url": "https://tvsen7.aynaott.com/hbo2/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "HGTV",
+    "url": "https://tvsen7.aynaott.com/hgtv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "LAFF TV",
+    "url": "https://tvsen7.aynaott.com/laff/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "LIFE TIME",
+    "url": "https://tvsen7.aynaott.com/lifetime/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Nat Geo TV",
+    "url": "https://tvsen6.aynaott.com/natgeo/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "SYFY TV",
+    "url": "https://tvsen7.aynaott.com/syfy/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "TLC HD",
+    "url": "https://tvsen6.aynaott.com/tlc_hd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Travel Channel",
+    "url": "https://tvsen6.aynaott.com/travelxp/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "IBTV USA",
+    "url": "https://tvsen7.aynaott.com/ibtvusa/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "WEATHER CHANNEL",
+    "url": "https://tvsen6.aynaott.com/TheWeatherChannel/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CNBC TV",
+    "url": "https://tvsen6.aynaott.com/cnbc/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CBS TV",
+    "url": "https://tvsen7.aynaott.com/cbs/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "CP 24",
+    "url": "https://tvsen6.aynaott.com/cp24/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MTV",
+    "url": "https://tvsen6.aynaott.com/mtv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "\\t USA TV",
+    "url": "https://tvsen6.aynaott.com/usa/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MSNBC News",
+    "url": "https://tvsen6.aynaott.com/msnbc/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Action Hollywood Movies",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Court TV",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-courttv-tablo/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Goldmines Bollywood",
+    "url": "https://tvsen6.aynaott.com/GoldminesBollywood/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Assam Talks",
+    "url": "https://tvsen7.aynaott.com/AssamTalks/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Taaza TV",
+    "url": "https://tvsen7.aynaott.com/TaazaTV/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dangal",
+    "url": "https://tvsen6.aynaott.com/Dangal/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "9x Jalwa",
+    "url": "https://tvsen6.aynaott.com/9xjalwa/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "9X Tashan",
+    "url": "https://tvsen6.aynaott.com/9X_Tashan/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dhinchaak",
+    "url": "https://tvsen6.aynaott.com/Dhinchaak/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Manoranjan TV",
+    "url": "https://tvsen6.aynaott.com/ManoranjanTV/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Network 10",
+    "url": "https://tvsen6.aynaott.com/Network10/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Republic TV Bharat",
+    "url": "https://tvsen6.aynaott.com/RepublicTVBharat/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Rongeen TV",
+    "url": "https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Green TV HD",
+    "url": "https://tvsen6.aynaott.com/GreenTvHD/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Hindi Movie Classic 24",
+    "url": "https://vods2.aynaott.com/hindimovies/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Awaaz India",
+    "url": "http://awaazindia.livebox.co.in/AwaazIndaTVhls/Live.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DD Bangla",
+    "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Enter 10 Bangla",
+    "url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Cartoon Network",
+    "url": "https://tvsen5.aynaott.com/cartoonnetwork/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "PBS Kids",
+    "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Disney JR",
+    "url": "https://tvsen7.aynaott.com/disneyjr/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Nicktoons",
+    "url": "https://tvsen5.aynaott.com/nicktoons/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Nickjr",
+    "url": "https://tvsen5.aynaott.com/nickjr/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "3ABN Kids",
+    "url": "https://tvsen6.aynaott.com/3abnkids/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Dios Te Ve Kids",
+    "url": "https://s.emisoras.tv:8081/diostevekids/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Moonbug Kids",
+    "url": "https://tvsen6.aynaott.com/MoonbugKids/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Disney Channel",
+    "url": "https://tvsen7.aynaott.com/disney/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Disney XD",
+    "url": "https://tvsen5.aynaott.com/disneyxd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Nickelodeon",
+    "url": "https://tvsen7.aynaott.com/nicklodean/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Teen Nick",
+    "url": "https://tvsen7.aynaott.com/teennick/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "YTV",
+    "url": "https://tvsen6.aynaott.com/ytv/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Deen TV",
+    "url": "https://tvsen7.aynaott.com/deen/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Eman Channel",
+    "url": "https://tvsen6.aynaott.com/eman/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MADANI TV",
+    "url": "https://tvsen7.aynaott.com/MadaniTV/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AccuWeather",
+    "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Deshi TV (720p)",
+    "url": "https://deshitv.deshitv24.net/live/myStream/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ATN Music (360p)",
+    "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/atnmusic.stream/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Green TV (1080p)",
+    "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "T Sports (720p)",
+    "url": "https://tvsen7.aynaott.com/tsportsfhd/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Ekushey TV (480p)",
+    "url": "https://ekusheyserver.com/etvlivesn.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NTV (720p)",
+    "url": "https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Saudia Arabia",
+    "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-saudi-tv/2ad66056b51fd8c1b624854623112e43/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "A Sports HD",
+    "url": "https://tvsen6.aynaott.com/asports/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Willow Extra Live",
+    "url": "http://27.124.71.27/Willow_Extra/index.m3u8",
+    "category": "Sports",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Arabica TV",
+    "url": "http://istream.binarywaves.com:8081/hls/arabica/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Saudi Quran",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sunnah Tv",
+    "url": "http://m.live.net.sa:1935/live/sunnah/chunklist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "QURAN",
+    "url": "http://m.live.net.sa:1935/live/quran/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AL SUNNAH TV",
+    "url": "http://m.live.net.sa:1935/live/sunnah/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AL EKHBARIA",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/al_ekhbariya/hls_roku/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "ALMASIRA MUBASHER",
+    "url": "https://live2.cdnbridge.tv/AlmasirahMubasher/Mubasher_All/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Rongeen TV",
+    "url": "https://server.thelegitpro.in/rongeentv/rongeentv/tracks-v1a1/mono.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AL EKHBARIA",
+    "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "AL QAMAR",
+    "url": "https://streamer3.premio.link/alqamar/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Insight",
+    "url": "https://insighttv-samsung-us.amagi.tv/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "REAL WILD",
+    "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00426-littledotstudio-realwild-tcl/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DW NEWS",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/stream02/streamPlaylist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "FASHION ONE",
+    "url": "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2ee6997cb_1/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Digital Fashion",
+    "url": "http://115.187.41.216:8080/hls/digitalfashion/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Quran",
+    "url": "https://download.quranicaudio.com/qdc/abdurrahmaan_as_sudais/murattal/96.mp3",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "DW English",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "News Max 2",
+    "url": "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "NDTV NEWS",
+    "url": "https://ndtv24x7elemarchana.akamaized.net/hls/live/2003678-b/ndtv24x7/master.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Al Quran Radio",
+    "url": "http://66.45.232.131:9994/;stream.mp3",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NDTV Hindi",
+    "url": "https://ndtvindiaelemarchana.akamaized.net/hls/live/2003679/ndtvindia/master.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NDTV English",
+    "url": "https://ndtv24x7elemarchana.akamaized.net/hls/live/2003678/ndtv24x7/master.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Arihant TV",
+    "url": "https://aasthaott.akamaized.net/110923/smil:arihant.smil/chunklist_b1928000.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sheemaroo Bollywood",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Zee Action",
+    "url": "http://103.175.73.12:8080/live/270/270_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "RTNEWS GLOBAL",
+    "url": "https://rt-rtd.rttv.com/dvr/rtdoc/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "R Plus News",
+    "url": "https://thelegitpro.in/pntv/rplusnews24x7/tracks-v1a1/mono.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Zee Anmol TV",
+    "url": "http://103.175.73.12:8080/live/256/256_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Big Magic",
+    "url": "http://103.175.73.12:8080/live/13/13_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "RT News (EN)",
+    "url": "https://rt-glb.rttv.com/live/rtnews/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-news-uk.png"
+  },
+  {
+    "name": "Goldmines Bollywood",
+    "url": "http://103.175.73.12:8080/live/52/52_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Star Sports 1 HD",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "Action Hollywood Movies",
+    "url": "https://amg01076-lightningintern-actionhollywood-samsungnz-82rry.amagi.tv/playlist/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Hindi Hits HD",
+    "url": "http://146.59.253.52:8080/hindihitshd/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Food Food",
+    "url": "http://103.175.73.12:8080/live/143/143_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "9XM",
+    "url": "http://103.175.73.12:8080/live/155/155_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "YRF Music HD",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01412-xiaomiasia-yrfmusic-xiaomi/playlist.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Surongo",
+    "url": "https://pub-d8f5af7f053343ed8295b16a145f6c1c.r2.dev/siam/[FGBDVibes]Surongo.(2023).480p.mkv",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Music India",
+    "url": "http://103.175.73.12:8080/live/158/158_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "E24",
+    "url": "http://103.175.73.12:8080/live/159/159_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Antarjal",
+    "url": "http://103.225.94.27/Infobase/hdd-2/Bangla/Antarjal%20(2023)%201080p%20WEBDL.mp4",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NHK World",
+    "url": "http://103.175.73.12:8080/live/417/417_0.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Mardaani 3",
+    "url": "http://103.225.94.27/Infobase/hdd-3/hindi/Mardaani%203%20(2026)%201080p%20DVDRip.mp4",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Test",
+    "url": "http://103.225.94.27/Infobase/hdd-3/Hindi%20Dub/Test%20(2025)%201080p%20WEBDL.mp4",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "NAGORIK TV HD",
+    "url": "http://103.204.43.87:8080/live/1/1/282.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Jalsha Movies HD",
+    "url": "http://103.204.43.87:8080/live/1/1/245.m3u8",
+    "category": "Sky",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-cinema-premiere-uk.png"
+  },
+  {
+    "name": "Baallee",
+    "url": "https://mcncdndigital.com/balleballetv/tracks-v1a1/mono.ts.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "MBC tv",
+    "url": "http://93.184.10.248/MBCBollywood/index.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Star Gold-2 HD",
+    "url": "http://103.204.43.87:8080/live/1/1/246.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "&Flix HD",
+    "url": "http://212.102.34.8:9080/AndFlixHD/video.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Sony Pix",
+    "url": "http://103.204.43.87:8080/live/1/1/260.m3u8",
+    "category": "Sky",
+    "logo": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=256&auto=format&fit=crop"
+  },
+  {
+    "name": "Star Sports Select 2",
+    "url": "http://103.204.43.87:8080/live/1/1/243.m3u8",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
+  },
+  {
+    "name": "PTV Sports",
+    "url": "http://119.156.228.231:9983/stream/channelid/679185749",
+    "category": "Sports",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png"
   }
-  ];
+];
 
 
 
 
 
-    class IPTVWebGLUpscaler {
-      constructor(videoElement, canvasElement) {
-        this.video = videoElement;
-        this.canvas = canvasElement || document.getElementById('gl-canvas');
-        this.upscalerEnabled = false; // Maps to existing integration checks
-        this.running = false;
-        this.corsBlocked = false; // Fallback indicator for cross-origin blocks
-        this.frameHandle = null;
 
-        // Try to obtain high-performance WebGL context
-        this.gl = this.canvas.getContext('webgl', {
-          antialias: false,
-          alpha: false,
-          powerPreference: 'high-performance',
-          depth: false,
-          stencil: false,
-          premultipliedAlpha: false,
-          preserveDrawingBuffer: false
-        }) || this.canvas.getContext('experimental-webgl');
-
-        if (!this.gl) {
-          console.warn("IPTV WebGL Upscaler: WebGL context creation failed. Falling back to GPU CSS.");
-          this.corsBlocked = true;
-          return;
-        }
-
-        this.initShaders();
-        this.initBuffers();
-        this.initTexture();
-        this.resizeCanvas();
-      }
-
-      resizeCanvas() {
-        if (!this.gl) return;
-        
-        // 1. Get hardware profile
-        const isHigh = document.body.classList.contains('cap-high');
-        const isMedium = document.body.classList.contains('cap-medium');
-        
-        // 2. Get container sizes and native stream sizes
-        const containerWidth = this.canvas.clientWidth || 1280;
-        const containerHeight = this.canvas.clientHeight || 720;
-        const streamWidth = this.video.videoWidth || 1280;
-        const streamHeight = this.video.videoHeight || 720;
-        
-        let w = streamWidth;
-        let h = streamHeight;
-        
-        if (isHigh || isMedium) {
-          // Calculate the actual display bounding box inside object-fit: contain container
-          const containerRatio = containerWidth / containerHeight;
-          const streamRatio = streamWidth / streamHeight;
-          
-          let displayWidth, displayHeight;
-          if (streamRatio > containerRatio) {
-            displayWidth = containerWidth;
-            displayHeight = containerWidth / streamRatio;
-          } else {
-            displayHeight = containerHeight;
-            displayWidth = containerHeight * streamRatio;
-          }
-          
-          // Apply device pixel ratio for high-end displays
-          const dpr = isHigh ? (window.devicePixelRatio || 1) : 1;
-          
-          w = Math.round(displayWidth * dpr);
-          h = Math.round(displayHeight * dpr);
-        }
-        
-        if (this.canvas.width !== w || this.canvas.height !== h) {
-          this.canvas.width = w;
-          this.canvas.height = h;
-          this.gl.viewport(0, 0, w, h);
-        }
-      }
-
-      initShaders() {
-        const vs = `
-          attribute vec2 aPos;
-          varying vec2 vTex;
-          void main() {
-            vTex = (aPos + 1.0) * 0.5;
-            vTex.y = 1.0 - vTex.y; // Correct vertical flip
-            gl_Position = vec4(aPos, 0.0, 1.0);
-          }
-        `;
-
-        const fs = `
-          precision highp float;
-          uniform sampler2D tex;
-          uniform vec2 sourceResolution;
-          uniform float sharpness; // Dynamically set sharpness coefficient
-          varying vec2 vTex;
-
-          // GPU-optimized B-Spline Bicubic Filter (using 4 bilinear lookups instead of 16 nearest lookups)
-          vec4 sampleBicubic(sampler2D s, vec2 uv, vec2 res) {
-            vec2 coord = uv * res;
-            vec2 gridVal = floor(coord - 0.5) + 0.5;
-            vec2 f = coord - gridVal;
-
-            vec2 w0 = 1.0/6.0 * (-(f*f*f) + 3.0*(f*f) - 3.0*f + 1.0);
-            vec2 w1 = 1.0/6.0 * (3.0*(f*f*f) - 6.0*(f*f) + 4.0);
-            vec2 w2 = 1.0/6.0 * (-3.0*(f*f*f) + 3.0*(f*f) + 3.0*f + 1.0);
-            vec2 w3 = 1.0/6.0 * (f*f*f);
-
-            vec2 g0 = w0 + w1;
-            vec2 g1 = w2 + w3;
-            vec2 h0 = (w1 / g0) - 0.5;
-            vec2 h1 = (w3 / g1) + 1.5;
-
-            vec2 texCoord00 = (gridVal + h0) / res;
-            vec2 texCoord10 = (gridVal + vec2(h1.x, h0.y)) / res;
-            vec2 texCoord01 = (gridVal + vec2(h0.x, h1.y)) / res;
-            vec2 texCoord11 = (gridVal + h1) / res;
-
-            return g0.x * g0.y * texture2D(s, texCoord00) +
-                   g1.x * g0.y * texture2D(s, texCoord10) +
-                   g0.x * g1.y * texture2D(s, texCoord01) +
-                   g1.x * g1.y * texture2D(s, texCoord11);
-          }
-
-          void main() {
-            vec2 px = vec2(1.0 / sourceResolution.x, 1.0 / sourceResolution.y);
-            
-            // Sample main center pixel with high-fidelity Bicubic interpolation
-            vec4 c = sampleBicubic(tex, vTex, sourceResolution);
-            
-            // Sample adjacent pixels with standard bilinear for spatial high-pass edge-detection
-            vec2 offset[4];
-            offset[0] = vec2(0.0, -px.y);
-            offset[1] = vec2(0.0, px.y);
-            offset[2] = vec2(px.x, 0.0);
-            offset[3] = vec2(-px.x, 0.0);
-
-            vec4 n = texture2D(tex, vTex + offset[0]);
-            vec4 s = texture2D(tex, vTex + offset[1]);
-            vec4 e = texture2D(tex, vTex + offset[2]);
-            vec4 w = texture2D(tex, vTex + offset[3]);
-
-            // Sharpness kernel mixing
-            vec4 result = c * (1.0 + 4.0 * sharpness) - (n + s + e + w) * sharpness;
-            gl_FragColor = clamp(result, 0.0, 1.0);
-          }
-        `;
-
-        const gl = this.gl;
-        const compile = (type, src) => {
-          const s = gl.createShader(type);
-          gl.shaderSource(s, src);
-          gl.compileShader(s);
-          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-            console.error("Shader compile error:", gl.getShaderInfoLog(s));
-          }
-          return s;
-        };
-
-        const program = gl.createProgram();
-        gl.attachShader(program, compile(gl.VERTEX_SHADER, vs));
-        gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fs));
-        gl.linkProgram(program);
-
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-          console.error("Shader program linking error:", gl.getProgramInfoLog(program));
-        }
-        this.program = program;
-      }
-
-      initBuffers() {
-        const gl = this.gl;
-        const verts = new Float32Array([
-          -1, -1,
-           1, -1,
-          -1,  1,
-           1,  1
-        ]);
-        const buf = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-        gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
-        this.buffer = buf;
-      }
-
-      initTexture() {
-        const gl = this.gl;
-        this.texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      }
-
-      draw() {
-        if (!this.running || !this.gl) return;
-
-        const gl = this.gl;
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-
-        try {
-          // Upload current video frame to GPU texture memory
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.video);
-        } catch (e) {
-          // CORS Tainting protection trigger!
-          // Remote streams hosted without Access-Control-Allow-Origin: * trigger security exception on texturing.
-          // In this case, we halt the rendering loop and fall back instantly to zero-copy GPU CSS.
-          console.warn("IPTV WebGL Upscaler: CORS security block detected. Seamlessly falling back to GPU CSS.");
-          this.corsBlocked = true;
-          this.stopRender();
-          applyCombinedFilters(); // Re-apply combined filters to trigger CSS fallback
-          return;
-        }
-
-        gl.useProgram(this.program);
-
-        // Pass native source video dimensions for accurate spatial filter steps
-        const sourceResLoc = gl.getUniformLocation(this.program, "sourceResolution");
-        gl.uniform2f(sourceResLoc, this.video.videoWidth || 1280, this.video.videoHeight || 720);
-
-        // Pass dynamic sharpness value based on user preference
-        const sharpnessLoc = gl.getUniformLocation(this.program, "sharpness");
-        let sharpnessVal = 0.12; // default: subtle
-        if (typeof enhancerStrength !== 'undefined') {
-          if (enhancerStrength === 'balanced') sharpnessVal = 0.20;
-          else if (enhancerStrength === 'ultra') sharpnessVal = 0.35;
-        }
-        gl.uniform1f(sharpnessLoc, sharpnessVal);
-
-        const loc = gl.getAttribLocation(this.program, "aPos");
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        gl.enableVertexAttribArray(loc);
-        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-        if (this.video.requestVideoFrameCallback) {
-          this.frameHandle = this.video.requestVideoFrameCallback(() => this.draw());
-        } else {
-          this.frameHandle = requestAnimationFrame(() => this.draw());
-        }
-      }
-
-      startRender() {
-        if (!this.gl || this.corsBlocked || !this.upscalerEnabled) return;
-        if (this.running) return;
-
-        this.running = true;
-        this.canvas.style.display = "block";
-        this.video.style.opacity = "0.01"; // Make video transparent but keep active for HLS/decoder updates
-        this.resizeCanvas();
-        this.draw();
-      }
-
-      stopRender() {
-        this.running = false;
-        this.canvas.style.display = "none";
-        this.video.style.opacity = "1"; // Restore native video element visibility
-
-        if (this.frameHandle) {
-          if (this.video.cancelVideoFrameCallback && this.video.requestVideoFrameCallback) {
-            try { this.video.cancelVideoFrameCallback(this.frameHandle); } catch(e) {}
-          } else {
-            cancelAnimationFrame(this.frameHandle);
-          }
-          this.frameHandle = null;
-        }
-      }
-    }
-    
     let allChannels = [];       // Loaded channel list
     let filteredChannels = [];  // Current display channel list
     let categories = {};        // Parsed categories list
@@ -5146,10 +7552,7 @@
     let streamRetryTimer = null;
     const MAX_STREAM_RETRIES = 3;
     let autoHideControlsTimer = null;
-    let videoEnhancerEnabled = false;
-    let enhancerStrength = 'subtle';
-
-    let upscaler = null;
+    let colorEnhancerEnabled = false;
 
     // Cinema Ambient Glow Backdrop States
     let ambientGlowEnabled = true; // Enabled by default for premium feel
@@ -5181,9 +7584,6 @@
       document.body.classList.add(`cap-${capability}`);
       console.log(`IPTV Engine: Profile loaded [Hardware Capability: ${capability.toUpperCase()}]`);
 
-      // Initialize WebGL upscaler
-      upscaler = new IPTVWebGLUpscaler(video, document.getElementById('gl-canvas'));
-
       // 1. Initialize favorites & recents from LocalStorage
       loadFavoritesFromStorage();
       loadRecentsFromStorage();
@@ -5200,18 +7600,10 @@
         volumeSlider.value = 1;
         updateVolumeSliderFill(1);
       }
-      const savedEnhancer = localStorage.getItem('iptv_video_enhancer') === 'true' || localStorage.getItem('iptv_video_enhancer') === 'sharpen';
-      const savedHDR = localStorage.getItem('iptv_hdr') === 'true';
-      setVideoEnhancerState(savedEnhancer);
-      setAIHDRState(savedHDR);
-
-      // Initialize Enhancer Strength setting
-      const savedStrength = localStorage.getItem('iptv_enhancer_strength') || 'subtle';
-      enhancerStrength = savedStrength;
-      const strengthSelect = document.getElementById('enhancerStrengthSelect');
-      if (strengthSelect) {
-        strengthSelect.value = savedStrength;
-      }
+      
+      // Initialize Vibrant Color Enhancer state
+      const savedColorEnhancer = localStorage.getItem('iptv_color_enhancer') === 'true';
+      setColorEnhancerState(savedColorEnhancer);
 
       // 3. Load active playlist source
       const savedPlaylistSource = localStorage.getItem('iptv_source_type') || 'default';
@@ -5260,9 +7652,6 @@
       document.addEventListener('fullscreenchange', checkOrientationState);
       window.addEventListener('resize', () => {
         checkOrientationState();
-        if (upscaler && upscaler.upscalerEnabled) {
-          upscaler.resizeCanvas();
-        }
       });
       window.addEventListener('orientationchange', checkOrientationState);
       
@@ -5476,6 +7865,19 @@
         return true;
       });
 
+      // Prioritize FIFA World Cup channels to the absolute beginning of the channel directory
+      const fifaChs = [];
+      const nonFifaChs = [];
+      allChannels.forEach(ch => {
+        const nameLower = (ch.name || '').toLowerCase();
+        if (nameLower.includes('fifa') || nameLower.includes('world cup')) {
+          fifaChs.push(ch);
+        } else {
+          nonFifaChs.push(ch);
+        }
+      });
+      allChannels = [...fifaChs, ...nonFifaChs];
+
       // Rebuild categories counts after dedup
       categories = {};
       allChannels.forEach(ch => {
@@ -5533,6 +7935,7 @@
         else if (cat === 'Music') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>';
         else if (cat === 'Kids') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>';
         else if (cat === 'Akash') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7a6 6 0 0 0-6-6M17 3a14 14 0 0 0-14 14M9 11a10 10 0 0 0-10-10M8 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1zM12 8V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zM14 11H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1zM8 8l3 3M12 12v5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1z"></path></svg>';
+        else if (cat === 'Sky') iconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-.01a7 7 0 0 0-12.99 2H5A5 5 0 0 0 5 22h13a5 5 0 0 0 0-10z"></path></svg>';
 
         coreCategories.push({
           id: cat,
@@ -5609,6 +8012,17 @@
     }
 
     function filterCategory(catId) {
+      // Clear search when switching categories
+      if (currentSearchQuery && catId !== currentCategory) {
+        const searchInput = document.getElementById('searchInput');
+        const headerSearchInput = document.getElementById('headerSearchInput');
+        if (searchInput) searchInput.value = '';
+        if (headerSearchInput) headerSearchInput.value = '';
+        currentSearchQuery = '';
+        const clearBtn = document.getElementById('clearSearchBtn');
+        if (clearBtn) clearBtn.style.display = 'none';
+      }
+
       currentCategory = catId;
       
       document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
@@ -5679,13 +8093,20 @@
         return;
       }
 
+      // Use DocumentFragment for batch DOM insertion — zero reflows until append
+      const fragment = document.createDocumentFragment();
+      const currentUrl = allChannels[currentIndex] ? allChannels[currentIndex].url : null;
+
       filteredChannels.forEach((ch, index) => {
         const isFav = favoritesList.includes(ch.url);
-        const isCurrentlyPlaying = (allChannels[currentIndex] && allChannels[currentIndex].url === ch.url);
+        const isCurrentlyPlaying = (currentUrl === ch.url);
 
         const card = document.createElement('div');
         card.className = `channel-card fade-in-entry ${isCurrentlyPlaying ? 'active' : ''}`;
-        card.style.animationDelay = `${Math.min(30, index) * 15}ms`;
+        // Cap stagger at 12 cards (180ms max), use minimal delays
+        if (index < 12) {
+          card.style.animationDelay = `${index * 15}ms`;
+        }
         card.onclick = () => {
           const globalIdx = allChannels.findIndex(x => x.url === ch.url);
           if (globalIdx !== -1) {
@@ -5718,8 +8139,11 @@
             <div class="channel-name" title="${ch.name}">${ch.name}</div>
           </div>
         `;
-        grid.appendChild(card);
+        fragment.appendChild(card);
       });
+
+      // Single DOM write — triggers only one reflow
+      grid.appendChild(fragment);
     }
 
     function renderEmptyState() {
@@ -5762,24 +8186,19 @@
     }
 
     function applySearchFilter(query) {
-      let baseList = [];
-      if (currentCategory === 'all') {
-        baseList = [...allChannels];
-      } else if (currentCategory === 'favorites') {
-        baseList = allChannels.filter(ch => favoritesList.includes(ch.url));
-      } else if (currentCategory === 'recents') {
-        recentPlayed.forEach(url => {
-          const match = allChannels.find(ch => ch.url === url);
-          if (match) baseList.push(match);
-        });
-      } else {
-        baseList = allChannels.filter(ch => ch.category === currentCategory);
-      }
+      // Search globally across all channels
+      const baseList = [...allChannels];
 
       filteredChannels = baseList.filter(ch => 
         ch.name.toLowerCase().includes(query) || 
         ch.category.toLowerCase().includes(query)
       );
+
+      // Dynamically update browser title to show search results
+      const titleEl = document.getElementById('browserTitle');
+      if (titleEl) {
+        titleEl.innerText = `Search Results for "${query}"`;
+      }
 
       renderChannelsGrid();
     }
@@ -5923,8 +8342,8 @@
             
             populateQualityLevels();
             
-            // Force maximum streaming resolution if Video Enhancer is enabled
-            if (videoEnhancerEnabled && hlsInstance.levels && hlsInstance.levels.length > 0) {
+            // Force maximum streaming resolution if Color Enhancer is enabled
+            if (colorEnhancerEnabled && hlsInstance.levels && hlsInstance.levels.length > 0) {
               hlsInstance.nextLevel = hlsInstance.levels.length - 1;
               hlsInstance.loadLevel = hlsInstance.levels.length - 1;
             }
@@ -6006,12 +8425,6 @@
       document.getElementById('playerOverlay').addEventListener('click', handlePlayerClick);
       document.getElementById('playerOverlay').addEventListener('touchend', handlePlayerClick);
       
-      video.addEventListener('loadedmetadata', () => {
-        if (upscaler && upscaler.upscalerEnabled) {
-          upscaler.resizeCanvas();
-        }
-      });
-
       video.addEventListener('waiting', () => {
         spinner.style.display = 'block';
         stopAmbientGlowLoop();
@@ -6025,16 +8438,10 @@
         showPlayIconState(false); 
         document.getElementById('playerErrorOverlay').style.display = 'none';
         startAmbientGlowLoop();
-        if (upscaler && upscaler.upscalerEnabled) {
-          upscaler.startRender();
-        }
       });
 
       video.addEventListener('play', () => {
         startAmbientGlowLoop();
-        if (upscaler && upscaler.upscalerEnabled) {
-          upscaler.startRender();
-        }
       });
 
       video.addEventListener('pause', () => {
@@ -6043,24 +8450,15 @@
 
         showPlayIconState(true);
         stopAmbientGlowLoop();
-        if (upscaler) {
-          upscaler.stopRender();
-        }
       });
 
       video.addEventListener('ended', () => {
         stopAmbientGlowLoop();
-        if (upscaler) {
-          upscaler.stopRender();
-        }
       });
 
       video.addEventListener('error', (e) => {
         handlePlaybackError('HTML5 Audio/Video error occurred');
         stopAmbientGlowLoop();
-        if (upscaler) {
-          upscaler.stopRender();
-        }
       });
     }
 
@@ -6444,152 +8842,82 @@
       }
     }
 
-    let hdrEnabled = false;
-
-    function toggleVideoEnhancer() {
-      setVideoEnhancerState(!videoEnhancerEnabled);
+    function toggleColorEnhancer() {
+      setColorEnhancerState(!colorEnhancerEnabled);
     }
 
-    function toggleAIHDR() {
-      setAIHDRState(!hdrEnabled);
-    }
+    function setColorEnhancerState(enabled) {
+      colorEnhancerEnabled = !!enabled;
+      localStorage.setItem('iptv_color_enhancer', colorEnhancerEnabled ? 'true' : 'false');
 
-    function setVideoEnhancerState(enabled) {
-      videoEnhancerEnabled = !!enabled;
-      localStorage.setItem('iptv_video_enhancer', videoEnhancerEnabled ? 'true' : 'false');
-
-      const btn = document.getElementById('enhancerBtn');
+      const btn = document.getElementById('colorEnhancerBtn');
       if (btn) {
-        if (videoEnhancerEnabled) {
+        if (colorEnhancerEnabled) {
           btn.classList.add('active-glow');
-          btn.style.setProperty('--btn-glow-color', '#06b6d4'); // Cyan glow
+          btn.style.setProperty('--btn-glow-color', '#a855f7'); // Violet glow
         } else {
           btn.classList.remove('active-glow');
         }
       }
 
-      // Configure upscaler state dynamically based on hardware capability
-      if (upscaler) {
-        const capability = document.body.classList.contains('cap-low') ? 'low' : 'high';
-        if (videoEnhancerEnabled && capability !== 'low' && !upscaler.corsBlocked) {
-          upscaler.upscalerEnabled = true;
-          if (!video.paused && !video.ended) {
-            upscaler.startRender();
-          }
-        } else {
-          upscaler.upscalerEnabled = false;
-          upscaler.stopRender();
-        }
+      const selectEl = document.getElementById('colorEnhancerSelect');
+      if (selectEl) {
+        selectEl.value = colorEnhancerEnabled ? 'enabled' : 'disabled';
       }
 
-      applyCombinedFilters();
-      
-      if (videoEnhancerEnabled) {
-        showToast("AI Sharpening: Enabled! 🌟", "success");
+      applyColorEnhancer();
+
+      if (colorEnhancerEnabled) {
+        showToast("Vibrant Color Enhancer: Enabled! 🌈", "success");
       } else {
-        showToast("AI Sharpening: Disabled", "warning");
+        showToast("Vibrant Color Enhancer: Disabled", "warning");
       }
     }
 
-    function setAIHDRState(enabled) {
-      hdrEnabled = !!enabled;
-      localStorage.setItem('iptv_hdr', hdrEnabled ? 'true' : 'false');
-
-      const btn = document.getElementById('hdrBtn');
-      if (btn) {
-        if (hdrEnabled) {
-          btn.classList.add('active-glow');
-          btn.style.setProperty('--btn-glow-color', '#f43f5e'); // Coral Pink glow
-        } else {
-          btn.classList.remove('active-glow');
-        }
-      }
-
-      applyCombinedFilters();
-
-      if (hdrEnabled) {
-        showToast("AI HDR: Dynamic Range color pop enabled! 🌈", "success");
-      } else {
-        showToast("AI HDR: Disabled", "warning");
-      }
-    }
-
-    function setEnhancerStrength(strength) {
-      enhancerStrength = strength;
-      localStorage.setItem('iptv_enhancer_strength', strength);
-      showToast(`AI Sharpening: ${strength.charAt(0).toUpperCase() + strength.slice(1)} Strength Enabled! 🌟`, 'success');
-      
-      // Force draw refresh if active
-      if (upscaler && upscaler.running && typeof upscaler.draw === 'function') {
-        requestAnimationFrame(() => upscaler.draw());
-      }
-    }
-
-    function applyCombinedFilters() {
-      // Clean previous classes from both video element and GL canvas
+    function applyColorEnhancer() {
+      // Clean previous upscaler/HDR classes from video element
       video.classList.remove('enhanced-clear', 'enhanced-hdr', 'enhanced-both');
-      const canvas = document.getElementById('gl-canvas');
-      if (canvas) {
-        canvas.classList.remove('enhanced-clear', 'enhanced-hdr', 'enhanced-both');
+      
+      if (colorEnhancerEnabled) {
+        video.classList.add('color-enhanced');
+      } else {
+        video.classList.remove('color-enhanced');
       }
 
+      // Update Stream Health HUD element
+      const colorEnhEl = document.getElementById('hudColorEnhancer');
+      if (colorEnhEl) {
+        colorEnhEl.innerText = colorEnhancerEnabled ? 'Enabled' : 'Disabled';
+        if (colorEnhancerEnabled) {
+          colorEnhEl.className = 'tech-hud-value active-green';
+        } else {
+          colorEnhEl.className = 'tech-hud-value';
+        }
+      }
+
+      // Sync color enhancer status badge
       const badge = document.getElementById('enhancerStatusBadge');
-      if (badge) badge.style.display = 'none';
+      if (badge) {
+        if (colorEnhancerEnabled) {
+          badge.style.display = 'flex';
+          badge.textContent = 'COLOR POP';
+          badge.style.background = 'rgba(168, 85, 247, 0.2)';
+          badge.style.borderColor = 'rgba(168, 85, 247, 0.5)';
+          badge.style.color = 'var(--accent-primary)';
+          badge.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.2)';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
 
       // Force HLS quality
-      if (videoEnhancerEnabled || hdrEnabled) {
+      if (colorEnhancerEnabled) {
         if (hlsInstance && hlsInstance.levels && hlsInstance.levels.length > 0) {
           hlsInstance.nextLevel = hlsInstance.levels.length - 1;
         }
       } else {
         if (hlsInstance) {
           hlsInstance.nextLevel = -1; // Auto level
-        }
-      }
-
-      const webglActive = upscaler && upscaler.running;
-
-      if (videoEnhancerEnabled && hdrEnabled) {
-        if (webglActive) {
-          // WebGL is doing high-fidelity sharpening, canvas does HDR dynamic range expansion
-          if (canvas) canvas.classList.add('enhanced-hdr');
-        } else {
-          video.classList.add('enhanced-both');
-        }
-        if (badge) {
-          badge.style.display = 'flex';
-          badge.textContent = webglActive ? 'AI SHARP (GL) + HDR' : 'AI SHARP (GPU) + HDR';
-          badge.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(244, 63, 94, 0.2) 100%)';
-          badge.style.borderColor = 'rgba(168, 85, 247, 0.5)';
-          badge.style.color = '#fff';
-          badge.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.3)';
-        }
-      } else if (videoEnhancerEnabled) {
-        if (!webglActive) {
-          video.classList.add('enhanced-clear');
-        }
-        if (badge) {
-          badge.style.display = 'flex';
-          badge.textContent = webglActive ? 'AI SHARP (GL)' : 'AI SHARP (GPU)';
-          badge.style.background = 'rgba(6, 182, 212, 0.2)';
-          badge.style.borderColor = 'rgba(6, 182, 212, 0.5)';
-          badge.style.color = 'var(--accent-secondary)';
-          badge.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.2)';
-        }
-      } else if (hdrEnabled) {
-        // Apply HDR dynamic range expansion to the currently visible element
-        if (webglActive && canvas) {
-          canvas.classList.add('enhanced-hdr');
-        } else {
-          video.classList.add('enhanced-hdr');
-        }
-        if (badge) {
-          badge.style.display = 'flex';
-          badge.textContent = 'AI HDR';
-          badge.style.background = 'rgba(244, 63, 94, 0.2)';
-          badge.style.borderColor = 'rgba(244, 63, 94, 0.5)';
-          badge.style.color = '#f43f5e';
-          badge.style.boxShadow = '0 0 10px rgba(244, 63, 94, 0.2)';
         }
       }
     }
@@ -6811,7 +9139,25 @@
     /* --- RESPONSIVE TOGGLE --- */
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('open');
+      const isOpen = sidebar.classList.toggle('open');
+      
+      // Sync the backdrop overlay for mobile
+      let backdrop = document.getElementById('sidebarBackdrop');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        backdrop.id = 'sidebarBackdrop';
+        backdrop.onclick = () => toggleSidebar();
+        sidebar.parentNode.insertBefore(backdrop, sidebar);
+      }
+      
+      if (isOpen) {
+        // Force reflow before adding class so transition runs
+        backdrop.offsetHeight;
+        backdrop.classList.add('show');
+      } else {
+        backdrop.classList.remove('show');
+      }
     }
 
     /* --- KEYBOARD SHORTCUTS --- */
@@ -6850,10 +9196,7 @@
           toggleAmbientGlow();
           break;
         case 'KeyE':
-          toggleVideoEnhancer();
-          break;
-        case 'KeyH':
-          toggleAIHDR();
+          toggleColorEnhancer();
           break;
         case 'KeyP':
           togglePip();
@@ -6884,12 +9227,6 @@
         }
       });
       
-      // resize GL canvas/upscaler
-      if (upscaler && typeof upscaler.resizeCanvas === 'function') {
-        setTimeout(() => {
-          upscaler.resizeCanvas();
-        }, 400); // match transition time (400ms)
-      }
     }
 
     function drawHudSparkline() {
@@ -7056,7 +9393,8 @@
       music: { primary: '#db2777', secondary: '#6366f1', rgbPrimary: '219, 39, 119', rgbSecondary: '99, 102, 241' },
       religious: { primary: '#d97706', secondary: '#f59e0b', rgbPrimary: '217, 119, 6', rgbSecondary: '245, 158, 11' },
       documentary: { primary: '#059669', secondary: '#0d9488', rgbPrimary: '5, 150, 105', rgbSecondary: '13, 148, 136' },
-      entertainment: { primary: '#a855f7', secondary: '#06b6d4', rgbPrimary: '168, 85, 247', rgbSecondary: '6, 182, 212' }
+      entertainment: { primary: '#a855f7', secondary: '#06b6d4', rgbPrimary: '168, 85, 247', rgbSecondary: '6, 182, 212' },
+      sky: { primary: '#0ea5e9', secondary: '#38bdf8', rgbPrimary: '14, 165, 233', rgbSecondary: '56, 189, 248' }
     };
 
     function applyCategoryColorSync(catId) {
@@ -7189,17 +9527,16 @@
         drawHudSparkline();
       }
 
-      // WebGL Shader Upscaling mode
-      let upscalerText = 'Disabled';
-      if (upscaler && upscaler.upscalerEnabled) {
-        upscalerText = upscaler.corsBlocked ? 'GPU Fallback' : 'WebGL Bicubic';
-      }
-      const upsEl = document.getElementById('hudUpscaler');
-      upsEl.innerText = upscalerText;
-      if (upscalerText !== 'Disabled') {
-        upsEl.className = 'tech-hud-value active-green';
-      } else {
-        upsEl.className = 'tech-hud-value';
+      // Color Enhancer HUD update
+      const colorEnhText = colorEnhancerEnabled ? 'Enabled' : 'Disabled';
+      const colorEnhEl = document.getElementById('hudColorEnhancer');
+      if (colorEnhEl) {
+        colorEnhEl.innerText = colorEnhText;
+        if (colorEnhancerEnabled) {
+          colorEnhEl.className = 'tech-hud-value active-green';
+        } else {
+          colorEnhEl.className = 'tech-hud-value';
+        }
       }
 
       // FPS Rate
